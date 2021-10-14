@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:solace="http://www.mulesoft.org/schema/mule/solace" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/solace http://www.mulesoft.org/schema/mule/solace/current/mule-solace.xsd">
+
+	<solace:config name="Solace_PubSub__Connector_Config" doc:name="Solace PubSub+ Connector Config" doc:id="41af90a1-d1d3-4699-bcfb-42200c68e5ad" >
+		<solace:connection msgVPN="default" brokerHost="tcp://localhost:55555" clientUserName="default" password="default" >
+		</solace:connection>
+	</solace:config>
+	
+	<solace:config name="Solace_PubSub__Connector_Config_Listener" doc:name="Solace PubSub+ Connector Config" doc:id="3c7172c8-64f1-4ddb-996d-79e1e317a509" >
+		<solace:connection msgVPN="default" brokerHost="tcp://localhost:55555" clientUserName="default" password="default" >
+		</solace:connection>
+	</solace:config>
+	
+	<flow name="responderFlow" doc:id="e6b242e3-adbf-4073-87de-2c3da6b7602d">
+		<solace:topic-listener doc:name="Direct Topic Subscriber" doc:id="36aa014a-c2b3-42d7-9e54-dae4635c3905" config-ref="Solace_PubSub__Connector_Config_Listener" topics="t/example/request"/>
+		<logger level="INFO" doc:name="Logger" doc:id="cb485466-0259-414d-8988-97d0892f8060" category="RESPONDER - " message="#[payload]"/>
+		<solace:publish doc:name="Publish direct" doc:id="875268f4-03e6-4ca2-86e5-09139f67d039" config-ref="Solace_PubSub__Connector_Config_Listener" address="#[attributes.replyTo]">
+			<solace:message correlationId="#[attributes.correlationId]" markAsReply="true">
+				<solace:body ><![CDATA[This is the response]]></solace:body>
+			</solace:message>
+		</solace:publish>
+	</flow>
+	
+	<flow name="requestFlow" doc:id="0f316a9d-ca8a-4698-aa64-eb6c97fa68bc" >
+		<scheduler doc:name="Scheduler" doc:id="f298179f-7c01-4a8a-b98b-79b3fca569e3" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="5" timeUnit="SECONDS" startDelay="3"/>
+			</scheduling-strategy>
+		</scheduler>
+		<solace:request-reply doc:name="Request reply direct" doc:id="10304449-4f8f-4725-adf2-2fe048d5fae2" config-ref="Solace_PubSub__Connector_Config" address="t/example/request" timeOut="15" timeUnit="SECONDS">
+			<solace:request-message >
+				<solace:body ><![CDATA[Hello responder]]></solace:body>
+			</solace:request-message>
+		</solace:request-reply>
+		<logger level="INFO" doc:name="Logger" doc:id="ede53433-e5a1-49e3-a193-aed4de8251ba" category="REQUESTOR - " message="#[payload]"/>
+		<error-handler>
+			<on-error-continue enableNotifications="false" logException="false" doc:name="On Error Continue" doc:id="95602bb3-3afe-4ae6-a029-d367ddd6488f" type="SOLACE:TIMEOUT">
+				<logger level="INFO" doc:name="Logger" doc:id="d145eae6-aa4b-4bb4-9ca6-f5fd4b013bc0" message="Oh no"/>
+			</on-error-continue>
+		</error-handler>
+	</flow>
+
+
+</mule>

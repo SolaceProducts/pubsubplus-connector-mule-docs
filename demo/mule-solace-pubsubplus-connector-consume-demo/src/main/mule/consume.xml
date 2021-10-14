@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:solace="http://www.mulesoft.org/schema/mule/solace" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/solace http://www.mulesoft.org/schema/mule/solace/current/mule-solace.xsd">
+
+	<solace:config name="Solace_PubSub__Connector_Config" doc:name="Solace PubSub+ Connector Config" doc:id="c3e6ee06-0dc7-4c53-8d02-89b64e93bd2c" >
+		<solace:connection msgVPN="default" brokerHost="tcp://localhost:55555" clientUserName="default" password="default" >
+		</solace:connection>
+	</solace:config>
+	
+	<flow name="consumeFlow" doc:id="074d1413-a47f-4f8f-a7e9-aa53b602b2b1" >
+		<scheduler doc:name="Scheduler" doc:id="25b7d76b-be94-4738-957c-867abfc5eac4" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="5" startDelay="3" timeUnit="SECONDS"/>
+			</scheduling-strategy>
+		</scheduler>
+		<solace:consume doc:name="Consume" doc:id="625560f9-bea3-42ae-b06b-6bf414ff969f" config-ref="Solace_PubSub__Connector_Config" address="q/consumeexample"/>
+		<logger level="INFO" doc:name="Logger" doc:id="c990e3c7-ffe8-4899-b2cc-458f798b3671" category="CONSUME OPERATION - " message="#[payload]"/>
+	</flow>
+	<flow name="produceFlow" doc:id="f3064682-d48f-4029-af37-f1c7f1b8bfe7" >
+		<scheduler doc:name="Scheduler" doc:id="0444764a-db6a-4966-bce9-926d2c0edb34" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="5" timeUnit="SECONDS"/>
+			</scheduling-strategy>
+		</scheduler>
+		<solace:publish doc:name="Publish" doc:id="1610a756-7353-4681-8674-6a5a1ea1fd08" config-ref="Solace_PubSub__Connector_Config" delivery-mode="PERSISTENT" destination-type="QUEUE" address="q/consumeexample" provisionEndpoint="true">
+			<solace:message >
+				<solace:body ><![CDATA[Hello Consume]]></solace:body>
+			</solace:message>
+		</solace:publish>
+	
+</flow>
+</mule>

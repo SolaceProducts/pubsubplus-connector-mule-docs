@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:solace="http://www.mulesoft.org/schema/mule/solace" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/solace http://www.mulesoft.org/schema/mule/solace/current/mule-solace.xsd">
+
+	<solace:config name="Solace_PubSub__Connector_Config" doc:name="Solace PubSub+ Connector Config" doc:id="1a432cdd-bf0e-452c-959b-234a817fa112" >
+		<solace:connection msgVPN="default" brokerHost="tcp://localhost:55555" clientUserName="default" password="default" >
+		</solace:connection>
+	</solace:config>
+	
+	<flow name="directListener" doc:id="e53c0c1f-4905-45f3-92bb-c35878f5c129" >
+		<solace:topic-listener doc:name="Direct Topic Subscriber" doc:id="1a29de9b-c8dd-4c9c-bb10-572d9a2f6786" config-ref="Solace_PubSub__Connector_Config" topics="t/simple/direct"/>
+		<logger level="INFO" doc:name="Logger" doc:id="14d3aa76-cb9b-492e-99d7-c2858ca489f0" category="DIRECT-SOURCE - " message="#[payload]"/>
+	</flow>
+	<flow name="guaranteedListener" doc:id="c50ea595-bf7c-4294-8914-7f51c3fb4828" >
+		<solace:queue-listener doc:name="Guaranteed Endpoint Listener" doc:id="4eaf898e-c69d-4bb8-b058-0c99a07105ab" config-ref="Solace_PubSub__Connector_Config" address="q/simple" provisionQueueWithOptionalTopicSubscription="true" addTopicSubscription="t/simple/direct"/>
+		<logger level="INFO" doc:name="Logger" doc:id="4aef2cc7-c0b8-44f8-89fe-acbdd130f712" category="GUARANTEED-SOURCE - " message="#[payload]"/>
+	</flow>
+	<flow name="simplesenderFlow" doc:id="d5a98232-fa1c-43f4-af6f-8dc0be4c80f4" initialState="started">
+		<scheduler doc:name="Scheduler" doc:id="a13799e8-94b5-4561-a811-27104f979fd1" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="5" startDelay="5" timeUnit="SECONDS"/>
+			</scheduling-strategy>
+		</scheduler>
+		<solace:publish doc:name="Publish direct" doc:id="cc9842ad-2c32-424d-af7d-4678578e8b72" config-ref="Solace_PubSub__Connector_Config" address="t/simple/direct">
+			<solace:message >
+				<solace:body ><![CDATA[Hello listeners]]></solace:body>
+			</solace:message>
+		</solace:publish>
+	</flow>
+	
+	
+	
+	
+</mule>

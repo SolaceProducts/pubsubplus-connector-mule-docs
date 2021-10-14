@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:solace="http://www.mulesoft.org/schema/mule/solace" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/solace http://www.mulesoft.org/schema/mule/solace/current/mule-solace.xsd">
+	
+	<solace:config name="Solace_PubSub__Connector_Config" doc:name="Solace PubSub+ Connector Config" doc:id="d1abd283-0ad8-4b30-9031-5d80ad701828" >
+		<solace:connection msgVPN="default" brokerHost="tcp://localhost:55555" clientUserName="default" password="default" >
+		</solace:connection>
+	</solace:config>
+	
+	<flow name="jsonSendFlow" doc:id="9bd95169-68f8-4baa-ad4f-c35b09467b5d" >
+		<scheduler doc:name="Scheduler" doc:id="16447358-e146-421b-be0e-b076a059aff5" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="5" timeUnit="SECONDS" startDelay="1"/>
+			</scheduling-strategy>
+		</scheduler>
+		<set-payload value='{"greeting": "hello","name": "solace"}' doc:name="Set Payload" doc:id="39065e5f-898e-4b1d-96dc-4f3a65e5bdd3" mimeType="application/json"/>
+		<solace:publish doc:name="Publish direct" doc:id="e2ba28e4-9748-42f5-a422-69a4aef1760c" config-ref="Solace_PubSub__Connector_Config" address="t/json/greeting"/>
+	</flow>
+	<flow name="jsonListenerFlow" doc:id="f20e740e-1fd7-4cbf-9889-ac3f3438c5c4" >
+		<solace:topic-listener doc:name="Direct Topic Subscriber" doc:id="49dbc568-1636-4d49-84ce-f533606126bb" config-ref="Solace_PubSub__Connector_Config" contentType="application/json" topics="t/json/greeting"/>
+		<logger level="INFO" doc:name="Logger" doc:id="b112ecbc-021d-4178-9fbb-823763ad219f" message="#[payload.name]" category="greeting to"/>
+	</flow>
+
+</mule>
