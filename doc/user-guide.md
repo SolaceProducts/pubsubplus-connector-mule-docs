@@ -431,7 +431,7 @@ Specifies where to consume the message from and how.
 |Ack Mode | Sets the [Application Acknowledgement](https://docs.solace.com/Solace-PubSub-Messaging-APIs/API-Developer-Guide/Acknowledging-Messages.htm) for the received message. Select from `AUTOMATIC IMMEDIATE` (default) or `MANUAL CLIENT`. This setting has no effect in `Browse Only` mode. |
 |Browse Only | If set to `True` the available message is not consumed from the queue and is delivered at the next "Consume" operation. In either case, the full message contents are returned for processing. |
 
->Note: If Ack Mode is "Manual Client", the message must be acknowledged within a [configurable maximum wait time timeout](https://github.com/SolaceDev/pubsubplus-connector-mule/blob/Documentation/doc/user-guide.md#general-configuration-advanced-tab), with default value of 2 minutes.
+>Note: If Ack Mode is "Manual Client", the message must be acknowledged within a [configurable maximum wait time timeout](#general-configuration-advanced-tab), with default value of 2 minutes.
 
 #### Optional Parameters
 
@@ -645,7 +645,7 @@ Specifies where to consume the message from and how.
 |Selector | Optionally specify a [selector](https://docs.solace.com/Solace-PubSub-Messaging-APIs/API-Developer-Guide/Using-Selectors.htm) to only consume from a subset of messages of interest. |
 |Ack Mode | Sets the [Application Acknowledgement](https://docs.solace.com/Solace-PubSub-Messaging-APIs/API-Developer-Guide/Acknowledging-Messages.htm) for the received message. Select from `AUTOMATIC IMMEDIATE` (default), `AUTOMATIC ON FLOW COMPLETION` or `MANUAL CLIENT`. "Manual Client" requires an explicit [Ack operation](#ack-operation) later in the flow. At "Automatic on flow completion" the message is automatically acknowledged after all processing at the end of the flow. |
 
->Note: If Ack Mode is "Manual Client", the message must be acknowledged within a [configurable maximum wait time timeout](https://github.com/SolaceDev/pubsubplus-connector-mule/blob/Documentation/doc/user-guide.md#general-configuration-advanced-tab), with default value of 2 minutes.
+>Note: If Ack Mode is "Manual Client", the message must be acknowledged within a [configurable maximum wait time timeout](#general-configuration-advanced-tab), with default value of 2 minutes.
 
 #### Optional Parameters
 
