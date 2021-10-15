@@ -42,10 +42,10 @@ MuleSoft disclaims any support obligation for MuleSoft Certified Connectors. By 
 
 ## Additional References
 
-* [Release Notes](doc/release-notes.md)
-* [User Guide](doc/user-guide.md)
-* [Technical Reference](doc/technical-reference.md)
-* [Examples](demo/README.md)
+* [Release Notes](https://github.com/SolaceProducts/pubsubplus-connector-mule-docs/blob/main/doc/release-notes.md)
+* [User Guide](https://github.com/SolaceProducts/pubsubplus-connector-mule-docs/blob/main/doc/user-guide.md)
+* [Technical Reference](https://github.com/SolaceProducts/pubsubplus-connector-mule-docs/blob/main/doc/technical-reference.md)
+* [Examples](https://github.com/SolaceProducts/pubsubplus-connector-mule-docs/blob/main/demo)
 
 ## Dependency Snippets
 
@@ -57,6 +57,12 @@ MuleSoft disclaims any support obligation for MuleSoft Certified Connectors. By 
   <classifier>mule-plugin</classifier>
 </dependency>
 ```
+
+## License
+
+The Solace PubSub+ Connector is licensed under the Solace User Agreement, refer to https://solace.com/license-software/.
+
+Solace PubSub+ Connector Documentation and Examples are licensed under the Apache License, Version 2.0. - See the [LICENSE](https://github.com/SolaceProducts/pubsubplus-connector-mule-docs/blob/main/LICENSE) file for details.
 
 ## Type
 
