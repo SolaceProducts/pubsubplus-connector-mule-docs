@@ -97,7 +97,7 @@ The connector exposes the following functionality to MuleSoft users and applicat
 
 *	Publish: publishes a direct message to a topic or a persistent message to a queue
 *	Consume: consumes a single guaranteed message from an endpoint (Solace queue)
-*	Request-Reply: a blocking operation that sends a message to a topic or queue (configurable) and waits for a response on an automatically created temporary topic or queue.
+*	Request-Reply: a blocking operation that sends a message to a topic or queue (configurable) and waits for a response on an automatically created temporary topic or queue
 *	Ack: acknowledges receipt of a guaranteed message
 
 </br>
@@ -115,7 +115,7 @@ The connector exposes the following functionality to MuleSoft users and applicat
 
 ### Key Concepts
 
-This document assumes that you are familiar with the MuleSoft Anypoint Platform (including Anypoint Connectors and Anypoint Studio), Mule concepts, elements in a Mule flow, and Global Elements. To get started, review the general [Anypoint Connector Configuration](https://docs.mulesoft.com/connectors/introduction/intro-connector-configuration-overview) section of the Mulesoft documentation.
+This document assumes that you are familiar with the MuleSoft Anypoint Platform (including Anypoint Connectors and Anypoint Studio), Mule concepts, elements in a Mule flow, and Global Elements. To get started, review the general [Anypoint Connector Configuration](https://docs.mulesoft.com/connectors/introduction/intro-connector-configuration-overview) section of the MuleSoft documentation.
 
 This document also assumes that you are familiar with [Solace Core Concepts](https://docs.solace.com/PubSub-Basics/Core-Concepts.htm) and [Solace PubSub+ Cloud](https://docs.solace.com/What-Is-PubSub-Cloud.htm). In particular, we recommend that you review following sections from the Solace documentation:
 * [Message Exchange Patterns](https://docs.solace.com/PubSub-Basics/Core-Concepts-Message-Models.htm) 

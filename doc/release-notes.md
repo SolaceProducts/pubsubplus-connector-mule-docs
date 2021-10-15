@@ -1,6 +1,6 @@
 # Solace PubSub+ Connector for Mule 4 Release Notes
 
-Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and PubSub+ Event Portal (event management) within Mulesoft Anypoint Platform, to make your Mulesoft integrations more reliable, agile, and event-driven.  
+Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and PubSub+ Event Portal (event management) within MuleSoft Anypoint Platform, to make your MuleSoft integrations more reliable, agile, and event-driven.  
 
 ## Solace PubSub+ Connector for Mule 4, v1.0.0
 
@@ -32,7 +32,7 @@ Solace PubSub+ Connector is available on Mule 4.x.
 
 *	Publish: publishes a direct message to a topic or a persistent message to a queue
 *	Consume: consumes a single guaranteed message from an endpoint (Solace queue)
-*	Request-Reply: a blocking operation that sends a message to a topic or queue (configurable) and waits for a response on an automatically created temporary topic or queue.
+*	Request-Reply: a blocking operation that sends a message to a topic or queue (configurable) and waits for a response on an automatically created temporary topic or queue
 *	Ack: acknowledges receipt of a guaranteed message
 
 ### POM Dependency
