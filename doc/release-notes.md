@@ -2,10 +2,24 @@
 
 Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and PubSub+ Event Portal (event management) within MuleSoft Anypoint Platform, to make your MuleSoft integrations more reliable, agile, and event-driven.  
 
-## Solace PubSub+ Connector for Mule 4, v1.0.0
+## v1.0.1
+**December 10, 2021**
+### Compatibility
 
-Solace PubSub+ Connector is available on Mule 4.x.
+| Application/Service | Version |
+|---|---|
+| Mule Runtime | 4.3 and higher |
+| Studio Version | 7.9 and higher |
+| PubSub+ Event Broker | 9.1 and higher |
+| Java | 1.8 and later |
 
+### Fixed Issues
+
+* The DMQ is now only provisioned by consuming operations when the ‘Provision Queue’ option is enabled. (SOL-59876)
+* Default producer is now lazily initialized by publishing operations only. (SOL-59879)
+
+## v1.0.0
+**October 21, 2021**
 ### Compatibility
 
 | Application/Service | Version |
