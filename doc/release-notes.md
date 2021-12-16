@@ -3,7 +3,7 @@
 Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and PubSub+ Event Portal (event management) within MuleSoft Anypoint Platform, to make your MuleSoft integrations more reliable, agile, and event-driven.  
 
 ## v1.0.1
-**December 10, 2021**
+**December 16, 2021**
 ### Compatibility
 
 | Application/Service | Version |
