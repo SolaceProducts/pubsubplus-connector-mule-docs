@@ -2,6 +2,22 @@
 
 Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and PubSub+ Event Portal (event management) within MuleSoft Anypoint Platform, to make your MuleSoft integrations more reliable, agile, and event-driven.  
 
+## v1.1.0
+**June 15, 2022**
+### Compatibility
+
+| Application/Service | Version |
+|---|---|
+| Mule Runtime | 4.3 and higher |
+| Studio Version | 7.9 and higher |
+| PubSub+ Event Broker | 9.1 and higher |
+| Java | 1.8 and later |
+
+### Fixed Issues
+
+* On failure, recover and redeliver messages blocking the head of line, when Manual Ack Mode is selected. (SOL-69546)
+* Auto recover session when maximum wait time for Manual Ack mode elapses. (SOL-71877)
+
 ## v1.0.2
 **May 4, 2022**
 ### Compatibility
