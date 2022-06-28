@@ -95,10 +95,11 @@ The connector exposes the following functionality to MuleSoft users and applicat
 
 **Operations**
 
-*	Publish: publishes a direct message to a topic or a persistent message to a queue
-*	Consume: consumes a single guaranteed message from an endpoint (Solace queue)
-*	Request-Reply: a blocking operation that sends a message to a topic or queue (configurable) and waits for a response on an automatically created temporary topic or queue
-*	Ack: acknowledges receipt of a guaranteed message
+* Publish: publishes a direct message to a topic or a persistent message to a queue
+* Consume: consumes a single guaranteed message from an endpoint (Solace queue)
+* Request-Reply: a blocking operation that sends a message to a topic or queue (configurable) and waits for a response on an automatically created temporary topic or queue
+* Ack: acknowledges receipt of a guaranteed message
+* Recover Session: perform session recover when the AckMode#MANUAL is opted while consuming the message
 
 </br>
 
@@ -329,6 +330,11 @@ These parameters appear in the "Content Type and Encoding" parameter group. The 
 |Encoding | Overrides the default encoding for the connector for this component |
 
 Refer to the [default encoding](#encoding) and the [default content type](#content-type) settings for the connector.
+
+##### Message Processing Parameter
+| Parameter field | Description                                                                        |
+|---|------------------------------------------------------------------------------------|
+|Process next message after Flow completion | Enables delivery of next message to the flow only after previous Flow is completed |
 
 </br>
 
@@ -574,6 +580,51 @@ After timeout an error condition is raised which can be handled by an Error Hand
     <on-error-continue enableNotifications="false" logException="false" doc:name="On Error Continue" type="SOLACE:TIMEOUT">
       <logger level="INFO" doc:name="Logger" message="Oh no"/>
     </on-error-continue>
+  </error-handler>
+</flow>
+```
+
+For more details refer to the [Recover Session](../demo/README.md#recoversession---recover-session) example.
+
+### Recover Session Operation
+
+Allows the user to perform a session recover when the AckMode#MANUAL mode is elected while consuming the Message. 
+
+Performing a session recover automatically redelivers all the consumed messages that had not being acknowledged before this recover.
+
+#### Required Parameters
+
+The following minimum parameters are required. There are no optional parameters.
+
+##### Connector Configuration
+
+Selects which connector configuration to use.
+
+##### Message Reference Id
+
+Specifies the "Reference Id" property from the Solace Message Properties of the message to be acknowledged.
+
+>Note that this is NOT the "Message Id" property!
+
+#### Example
+
+![alt text](/doc/images/ConsumeOperationRecoverSession.png "Recover Session Example")
+
+```xml
+<flow name="ConsumeOperationRecoverSession" doc:id="23279792-da27-47bc-89c4-dd11d057553a" initialState="stopped" maxConcurrency="1">
+  <scheduler doc:name="Scheduler" doc:id="d8b0ae51-3ac4-4cab-b576-0edbadcd1c16" >
+    <scheduling-strategy >
+      <fixed-frequency frequency="2000"/>
+    </scheduling-strategy>
+  </scheduler>
+  <logger level="INFO" doc:name="Logger" doc:id="3db06a3e-959d-4534-9d18-fe5138da4b16" message="Running Flow"/>
+  <solace:consume address="q/recoversession" doc:name="Consume" doc:id="c7777270-67c8-4c27-8c70-b9d18b8de73f" config-ref="Solace_PubSub__Connector_Config" ackMode="MANUAL_CLIENT"></solace:consume>
+  <set-variable value="#[attributes.messageReferenceId]" doc:name="Set Variable" doc:id="01b6baf1-bdce-4a9e-87ec-18ec2741a4ae" variableName="ack_id"/>
+  <solace:ack doc:name="Ack" doc:id="ee7adb28-feb7-4930-ac9a-d228ea47688d" config-ref="Solace_PubSub__Connector_Config" messageRefId="#[vars.ack_id]"/>
+  <error-handler >
+    <on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="2825da0f-307f-4a8f-a395-4c924c5b8209">
+      <solace:recover-session doc:name="Recover session" doc:id="d141546d-5e97-471e-bbcf-fc1185d33a2f" config-ref="Solace_PubSub__Connector_Config" messageRefId="#[vars.ack_id]"/>
+    </on-error-propagate>
   </error-handler>
 </flow>
 ```

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:solace="http://www.mulesoft.org/schema/mule/solace" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/solace http://www.mulesoft.org/schema/mule/solace/current/mule-solace.xsd">
+
+	<solace:config name="Solace_PubSub__Connector_Config" doc:name="Solace PubSub+ Connector Config" doc:id="442629c7-133b-44e9-983a-5f84f4a56979" >
+		<solace:connection msgVPN="default" brokerHost="tcp://localhost:55555" clientUserName="default" password="default" >
+		</solace:connection>
+	</solace:config>
+
+	<flow name="ConsumeOperationRecoverSession" doc:id="23279792-da27-47bc-89c4-dd11d057553a" initialState="stopped" maxConcurrency="1">
+		<scheduler doc:name="Scheduler" doc:id="d8b0ae51-3ac4-4cab-b576-0edbadcd1c16" >
+			<scheduling-strategy >
+				<fixed-frequency frequency="2000"/>
+			</scheduling-strategy>
+		</scheduler>
+		<logger level="INFO" doc:name="Logger" doc:id="3db06a3e-959d-4534-9d18-fe5138da4b16" message="Running Flow"/>
+		<solace:consume address="q/recoversession" doc:name="Consume" doc:id="c7777270-67c8-4c27-8c70-b9d18b8de73f" config-ref="Solace_PubSub__Connector_Config" ackMode="MANUAL_CLIENT"></solace:consume>
+		<set-variable value="#[attributes.messageReferenceId]" doc:name="Set Variable" doc:id="01b6baf1-bdce-4a9e-87ec-18ec2741a4ae" variableName="ack_id"/>
+		<solace:ack doc:name="Ack" doc:id="ee7adb28-feb7-4930-ac9a-d228ea47688d" config-ref="Solace_PubSub__Connector_Config" messageRefId="#[vars.ack_id]"/>
+		<raise-error doc:name="Raise error" doc:id="53b309f9-a69f-4d5d-8cb5-aecb0dcc8c13" type="MULE:SECURITY"/>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="2825da0f-307f-4a8f-a395-4c924c5b8209">
+				<solace:recover-session doc:name="Recover session" doc:id="d141546d-5e97-471e-bbcf-fc1185d33a2f" config-ref="Solace_PubSub__Connector_Config" messageRefId="#[vars.ack_id]"/>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+
+</mule>
