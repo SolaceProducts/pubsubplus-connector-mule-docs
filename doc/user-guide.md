@@ -330,12 +330,6 @@ These parameters appear in the "Content Type and Encoding" parameter group. The 
 |Encoding | Overrides the default encoding for the connector for this component |
 
 Refer to the [default encoding](#encoding) and the [default content type](#content-type) settings for the connector.
-
-##### Message Processing Parameter
-| Parameter field | Description                                                                        |
-|---|------------------------------------------------------------------------------------|
-|Process next message after Flow completion | Enables delivery of next message to the flow only after previous Flow is completed |
-
 </br>
 
 ## Common Attributes for Inbound Messages
@@ -700,7 +694,12 @@ Specifies where to consume the message from and how.
 
 #### Optional Parameters
 
-For optional parameters, refer to the [Common Parameters](#common-parameters) section.
+##### Message Processing Parameter [Under "Advanced" tab]
+| Parameter field | Description                                                                        |
+|---|------------------------------------------------------------------------------------|
+|Process next message after Flow completion | Enables delivery of next message to the flow only after previous Flow is completed |
+
+For other optional parameters, refer to the [Common Parameters](#common-parameters) section.
 
 #### Example
 

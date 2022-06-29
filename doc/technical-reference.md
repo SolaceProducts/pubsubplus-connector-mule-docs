@@ -3170,6 +3170,192 @@ Any
 
 </div>
 
+<div class="sectionbody">
+
+<div class="sect2">
+
+### Recover Session
+
+<div class="paragraph">
+
+`<solace:recover-session>`
+
+</div>
+
+<div class="paragraph">
+
+Operation that allows  the user to perform a session recover when the AckMode#MANUAL mode is elected while consuming the Message.
+
+</div>
+
+<div class="sect3">
+
+#### Parameters
+
+<table class="tableblock frame-all grid-all spread"><colgroup><col style="width: 20%;"> <col style="width: 20%;"> <col style="width: 35%;"> <col style="width: 20%;"> <col style="width: 5%;"></colgroup>
+
+<thead>
+
+<tr>
+
+<th class="tableblock halign-left valign-middle">Name</th>
+
+<th class="tableblock halign-left valign-middle">Type</th>
+
+<th class="tableblock halign-left valign-middle">Description</th>
+
+<th class="tableblock halign-left valign-middle">Default Value</th>
+
+<th class="tableblock halign-center valign-middle">Required</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+Configuration
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+String
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+The name of the configuration to use.
+
+</td>
+
+<td class="tableblock halign-left valign-middle"></td>
+
+<td class="tableblock halign-center valign-middle">
+
+**x**
+
+</td>
+
+</tr>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+Message Reference Id
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+<div>
+
+<div class="paragraph">
+
+String
+
+</div>
+
+</div>
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+The "Reference Id" property from the Solace Message Properties of the message to be acknowledged
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+</td>
+
+<td class="tableblock halign-center valign-middle"></td>
+
+</tr>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+Reconnection Strategy
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+<div>
+
+<div class="ulist">
+
+*   [Reconnect](#reconnect)
+
+*   [Reconnect Forever](#reconnect-forever)
+
+</div>
+
+</div>
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+A retry strategy in case of connectivity errors
+
+</td>
+
+<td class="tableblock halign-left valign-middle"></td>
+
+<td class="tableblock halign-center valign-middle"></td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="sect3">
+
+#### For Configurations.
+
+<div class="ulist">
+
+*   [Config](#config)
+
+</div>
+
+</div>
+
+<div class="sect3">
+
+#### Throws
+
+<div class="ulist">
+
+* SOLACE:GENERIC_ERROR
+
+* SOLACE:SESSION_RECOVER
+
+* SOLACE:RETRY_EXHAUSTED
+
+* SOLACE:INVALID_CONFIGURATION
+
+* SOLACE:CONNECTIVITY
+
+</div>
+
+</div>
+
+</div>
+
 <div class="sect1">
 
 ## Sources
@@ -3635,6 +3821,42 @@ A retry strategy in case of connectivity errors
 </td>
 
 <td class="tableblock halign-left valign-middle"></td>
+
+<td class="tableblock halign-center valign-middle"></td>
+
+</tr>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+Process next message after Flow completion 
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+<div>
+
+<div class="paragraph">
+
+Boolean
+
+</div>
+
+</div>
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+Enables delivery of next message to the flow only after previous Flow is completed
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+false
+</td>
 
 <td class="tableblock halign-center valign-middle"></td>
 

@@ -18,6 +18,12 @@ Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and
 * On failure, recover and redeliver messages blocking the head of line, when Manual Ack Mode is selected. (SOL-69546)
 * Auto recover session when maximum wait time for Manual Ack mode elapses. (SOL-71877)
 
+### Key Features
+
+**Sources**
+
+*	Guaranteed Endpoint Listener: feature when enabled ensures delivery of next message to the mule flow only if the previous flow succeeded 
+
 ## v1.0.2
 **May 4, 2022**
 ### Compatibility
