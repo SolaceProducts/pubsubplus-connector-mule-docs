@@ -99,7 +99,7 @@ The connector exposes the following functionality to MuleSoft users and applicat
 * Consume: consumes a single guaranteed message from an endpoint (Solace queue)
 * Request-Reply: a blocking operation that sends a message to a topic or queue (configurable) and waits for a response on an automatically created temporary topic or queue
 * Ack: acknowledges receipt of a guaranteed message
-* Recover Session: perform session recover when the AckMode#MANUAL is opted while consuming the message
+* Recover Session: perform session recover when consuming an unacknowledged Message
 
 </br>
 
@@ -578,11 +578,11 @@ After timeout an error condition is raised which can be handled by an Error Hand
 </flow>
 ```
 
-For more details refer to the [Recover Session](../demo/README.md#recoversession---recover-session) example.
+For more details refer to the [Request Reply](../demo/README.md#requestreply---request-reply) example.
 
 ### Recover Session Operation
 
-Allows the user to perform a session recover when the AckMode#MANUAL mode is elected while consuming the Message. 
+Allows the user to perform a session recover while consuming an unacknowledged message. For e.g. it can be used with either "Consume Operation" or "Guaranteed Endpoint Listener" with AckMode#MANUAL.
 
 Performing a session recover automatically redelivers all the consumed messages that had not being acknowledged before this recover.
 
@@ -602,18 +602,14 @@ Specifies the "Reference Id" property from the Solace Message Properties of the 
 
 #### Example
 
-![alt text](/doc/images/ConsumeOperationRecoverSession.png "Recover Session Example")
+![alt text](/doc/images/ListenerRecoverSession.png "Recover Session Example")
 
 ```xml
-<flow name="ConsumeOperationRecoverSession" doc:id="23279792-da27-47bc-89c4-dd11d057553a" initialState="stopped" maxConcurrency="1">
-  <scheduler doc:name="Scheduler" doc:id="d8b0ae51-3ac4-4cab-b576-0edbadcd1c16" >
-    <scheduling-strategy >
-      <fixed-frequency frequency="2000"/>
-    </scheduling-strategy>
-  </scheduler>
+<flow name="listenerrecoversession" doc:id="23279792-da27-47bc-89c4-dd11d057553a" maxConcurrency="1">
+  <solace:queue-listener address="q/recoversession" doc:name="Guaranteed Endpoint Listener" doc:id="8431dce7-162c-412c-81e5-ae877e71144a" config-ref="Solace_PubSub__Connector_Config"/>
   <logger level="INFO" doc:name="Logger" doc:id="3db06a3e-959d-4534-9d18-fe5138da4b16" message="Running Flow"/>
-  <solace:consume address="q/recoversession" doc:name="Consume" doc:id="c7777270-67c8-4c27-8c70-b9d18b8de73f" config-ref="Solace_PubSub__Connector_Config" ackMode="MANUAL_CLIENT"></solace:consume>
   <set-variable value="#[attributes.messageReferenceId]" doc:name="Set Variable" doc:id="01b6baf1-bdce-4a9e-87ec-18ec2741a4ae" variableName="ack_id"/>
+  <raise-error doc:name="Raise error" doc:id="7636b0c3-e14a-4d5b-9b3b-73b057f951f8" type="MULE:SECURITY"/>
   <solace:ack doc:name="Ack" doc:id="ee7adb28-feb7-4930-ac9a-d228ea47688d" config-ref="Solace_PubSub__Connector_Config" messageRefId="#[vars.ack_id]"/>
   <error-handler >
     <on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="2825da0f-307f-4a8f-a395-4c924c5b8209">
@@ -623,7 +619,7 @@ Specifies the "Reference Id" property from the Solace Message Properties of the 
 </flow>
 ```
 
-For more details refer to the [Request Reply](../demo/README.md#requestreply---request-reply) example.
+For more details refer to the [Recover Session](../demo/README.md#recoversession---recover-session) example.
 
 ## Sources
 
@@ -695,9 +691,9 @@ Specifies where to consume the message from and how.
 #### Optional Parameters
 
 ##### Message Processing Parameter [Under "Advanced" tab]
-| Parameter field | Description                                                                        |
-|---|------------------------------------------------------------------------------------|
-|Process next message after Flow completion | Enables delivery of next message to the flow only after previous Flow is completed |
+| Parameter field                            | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+|--------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Process next message after Flow completion | If enabled then the next received message even if available, will not be delivered to the flow before the complete processing of the previous message has been completed. This is advantageous when you want to prevent race condition to process any additional messages, while using Recover Session. <br/> <em> **Note**: Since this restricts processing of one message at a time for the flow. Any concurrency settings if done, will be of no significance, as essentially the max concurrency will only be one. </em> |
 
 For other optional parameters, refer to the [Common Parameters](#common-parameters) section.
 

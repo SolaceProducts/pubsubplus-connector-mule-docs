@@ -10,13 +10,14 @@ Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and
 
 * Native access to PubSub+ Platform in the Mule Palette
 
-*  PubSub+ Event Broker (Six Operations and Sources supported):
+*  PubSub+ Event Broker (Seven Operations and Sources supported):
     * Consume event/message (triggered consumer)
     * Direct Topic Subscriber (push direct message consumer)
     * Guaranteed Endpoint Listener (push GM consumer)
     * Request-reply (synchronous wait for reply in flow)
     * Publish to topic or queue (direct or persistent)
     * Ack to acknowledge messages anywhere in the Flow
+    * Recover Session to perform session recover while consuming an unacknowledged message
 
  * PubSub+ Event Portal integration
 

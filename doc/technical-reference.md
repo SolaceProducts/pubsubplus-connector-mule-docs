@@ -9,10 +9,11 @@
 *   [Configurations](#_configurations)
     *   [Config](#config)
 *   [Operations](#_operations)
-    *   [Ack](#Ack)
-    *   [Consume](#Consume)
-    *   [Publish](#Publish)
-    *   [Request Reply](#requestReply)
+    * [Ack](#Ack)
+    * [Consume](#Consume)
+    * [Publish](#Publish)
+    * [Request Reply](#requestReply)
+    * [Recover Session](#recover-session)
 *   [Sources](#_sources)
     *   [Guaranteed Endpoint Listener](#queue-listener)
     *   [Direct Topic Subscriber](#topic-listener)
@@ -3184,7 +3185,7 @@ Any
 
 <div class="paragraph">
 
-Operation that allows  the user to perform a session recover when the AckMode#MANUAL mode is elected while consuming the Message.
+Operation that allows  the user to perform a session recover when consuming an unacknowledged message.
 
 </div>
 
@@ -3276,7 +3277,11 @@ The "Reference Id" property from the Solace Message Properties of the message to
 
 </td>
 
-<td class="tableblock halign-center valign-middle"></td>
+<td class="tableblock halign-center valign-middle">
+
+**x**
+
+</td>
 
 </tr>
 

@@ -8,6 +8,7 @@ It contains the following flows:
 * [`requestreply`](#requestreply---request-reply): Request-reply with a responder service
 * [`manualack`](#manualack---manual-acknowledgement): Manual Message Acknowledgement
 * [`jsonmessage`](#jsonmessage---complex-message-json): Complex message - JSON payload
+* [`listenerrecoversession`](#recoversession---recover-session): Recover Session for a Guaranteed Endpoint Listener
 
 ## How to import & run the examples
 
@@ -122,36 +123,35 @@ INFO  2020-07-23 13:35:50,946 [[MuleRuntime].cpuLight.15: [jsonmessage].jsonList
 
 ## recoversession - Recover Session
 
-Demonstrates recover session when the AckMode#MANUAL mode is selected for a Consume Operation.
+Demonstrates recover session when consuming an unacknowledged message.
 
 This example uses simple text payloads.
 
-Please inspect the connector configuration's `Endpoint Consumer` tab - the acknowledgement mode is set to `MANUAL_CLIENT`.
+Please inspect the connector configuration's `Endpoint` tab - the acknowledgement mode is recommended to be set to `MANUAL_CLIENT` in this case.
 
 It contains the following flows:
-* ConsumeOperationRecoverSession: Consumes message from the queue `q/recoversession` on schedule. Ensure this queue is provisioned and queued with some messages. The process first logs that the flow is running, then consumes messages from the queue, sets to a variable then finally throws MULE:SECURITY error. This error is then handled using "On Error Propagate" within which a Recover Session operation is called with Message Reference Id.
+* listenerrecoversession: Listener source consumes message from the queue `q/recoversession`. Ensure this queue is provisioned and queued with just 1 message. The process first logs that the flow is running, then consumes messages from the queue, sets to a variable then finally throws MULE:SECURITY error. This error is then handled using "On Error Propagate" within which a Recover Session operation is called with Message Reference Id.
 
 **How to verify it's working?**
 
-On every message the `ConsumeOperationRecoverSession` writes the followng entries into the log - note that the "Running Flow", followed by "MULE:SECURITY" and "Recover session called for msgRefId=...", "Successfully restarted consume operation" and finally the Flow starts again:
+On every message the `listenerrecoversession` writes the following entries into the log - note that the "Running Flow", followed by "MULE:SECURITY" and "Recover session called for msgRefId=...", "Successfully restarted consume operation" and finally the Flow starts again:
 
 ```
-INFO  2022-06-28 22:28:08,191 [[MuleRuntime].uber.03: [solacepubsubplusconnector].ConsumeOperationRecoverSession.CPU_LITE @71bbb8f8] [processor: ConsumeOperationRecoverSession/processors/0; event: 7c27fa00-f703-11ec-aa67-66bc5810864b] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: Running Flow
-ERROR 2022-06-28 22:28:08,789 [[MuleRuntime].uber.04: [solacepubsubplusconnector].ConsumeOperationRecoverSession.BLOCKING @5703f70e] [processor: ConsumeOperationRecoverSession/processors/3; event: 7c27fa00-f703-11ec-aa67-66bc5810864b] org.mule.runtime.core.internal.exception.OnErrorPropagateHandler: 
+INFO  2022-06-30 20:55:09,660 [[MuleRuntime].uber.03: [solacepubsubplusconnector].listenerrecoversession.CPU_LITE @17a8bc87] [processor: listenerrecoversession/processors/0; event: d3ea4870-f888-11ec-98a7-66bc5810864b] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: Running Flow
+ERROR 2022-06-30 20:55:09,733 [[MuleRuntime].uber.03: [solacepubsubplusconnector].listenerrecoversession.CPU_LITE @17a8bc87] [processor: listenerrecoversession/processors/2; event: d3ea4870-f888-11ec-98a7-66bc5810864b] org.mule.runtime.core.internal.exception.OnErrorPropagateHandler: 
 ********************************************************************************
 Message               : An error occurred.
-Element               : ConsumeOperationRecoverSession/processors/3 @ solacepubsubplusconnector:solacepubsubplusconnector.xml:257 (Raise error)
+Element               : listenerrecoversession/processors/2 @ solacepubsubplusconnector:solacepubsubplusconnector.xml:251 (Raise error)
 Element DSL           : <raise-error doc:name="Raise error" doc:id="7636b0c3-e14a-4d5b-9b3b-73b057f951f8" type="MULE:SECURITY"></raise-error>
 Error type            : MULE:SECURITY
-FlowStack             : at ConsumeOperationRecoverSession(ConsumeOperationRecoverSession/processors/3 @ solacepubsubplusconnector:solacepubsubplusconnector.xml:257 (Raise error))
+FlowStack             : at listenerrecoversession(listenerrecoversession/processors/2 @ solacepubsubplusconnector:solacepubsubplusconnector.xml:251 (Raise error))
 
   (set debug level logging or '-Dmule.verbose.exceptions=true' for everything)
 ********************************************************************************
 
-INFO  2022-06-28 22:28:08,789 [[MuleRuntime].uber.03: [solacepubsubplusconnector].ConsumeOperationRecoverSession.BLOCKING @5703f70e] [processor: ConsumeOperationRecoverSession/errorHandler/0/processors/0; event: 7c27fa00-f703-11ec-aa67-66bc5810864b] com.solace.connector.mulesoft.internal.operation.RecoverOperation: Recover session called for msgRefId=6d130d4a-80f9-4a39-982b-05c2083e5ba1
-DEBUG 2022-06-28 22:28:08,789 [[MuleRuntime].uber.03: [solacepubsubplusconnector].ConsumeOperationRecoverSession.BLOCKING @5703f70e] [processor: ConsumeOperationRecoverSession/errorHandler/0/processors/0; event: 7c27fa00-f703-11ec-aa67-66bc5810864b] com.solace.connector.mulesoft.internal.connection.SolaceConnection: Closing flowReceiver
-INFO  2022-06-28 22:28:09,010 [[MuleRuntime].uber.03: [solacepubsubplusconnector].ConsumeOperationRecoverSession.BLOCKING @5703f70e] [processor: ConsumeOperationRecoverSession/errorHandler/0/processors/0; event: 7c27fa00-f703-11ec-aa67-66bc5810864b] com.solace.connector.mulesoft.internal.connection.SolaceConnection: Successfully restarted consume operation
-INFO  2022-06-28 22:28:18,181 [[MuleRuntime].uber.04: [solacepubsubplusconnector].ConsumeOperationRecoverSession.CPU_LITE @71bbb8f8] [processor: ConsumeOperationRecoverSession/processors/0; event: 82210f50-f703-11ec-aa67-66bc5810864b] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: Running Flow
+INFO  2022-06-30 20:55:09,748 [[MuleRuntime].uber.04: [solacepubsubplusconnector].listenerrecoversession.BLOCKING @62ad008e] [processor: listenerrecoversession/errorHandler/0/processors/0; event: d3ea4870-f888-11ec-98a7-66bc5810864b] com.solace.connector.mulesoft.internal.operation.RecoverOperation: Recover session called for msgRefId=df03be64-435c-421e-bf30-3dce60050802
+INFO  2022-06-30 20:55:10,245 [[MuleRuntime].uber.04: [solacepubsubplusconnector].listenerrecoversession.BLOCKING @62ad008e] [processor: listenerrecoversession/errorHandler/0/processors/0; event: d3ea4870-f888-11ec-98a7-66bc5810864b] com.solace.connector.mulesoft.internal.connection.SolaceConnection: Successfully restarted source consumer
+INFO  2022-06-30 20:55:10,252 [[MuleRuntime].uber.03: [solacepubsubplusconnector].listenerrecoversession.CPU_LITE @17a8bc87] [processor: listenerrecoversession/processors/0; event: d3ef2a70-f888-11ec-98a7-66bc5810864b] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: Running Flow
 ```
 
-You can monitor the queue provided it has the default "infinite redeliveries" property set, the messages never get consumed.
+You can monitor the queue provided it has the default "infinite redeliveries" property set, the message never gets consumed.
