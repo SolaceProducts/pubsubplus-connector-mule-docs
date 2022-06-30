@@ -63,7 +63,7 @@ Contents:
     + [Recover Session](#recover-session-operation)
         - [Required Parameters](#required-parameters-4)
             * [Connector Configuration](#connector-configuration-4)
-            * [Message Reference Id](#message-reference-id)
+            * [Message Reference Id](#message-reference-id-4)
         - [Example](#example-4)    
   * [Sources](#sources)
     + [Direct Topic Subscriber source](#direct-topic-subscriber-source)
