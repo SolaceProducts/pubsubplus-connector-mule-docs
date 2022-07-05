@@ -587,7 +587,7 @@ For more details refer to the [Request Reply](../demo/README.md#requestreply---r
 
 ### Recover Session Operation
 
-Allows the user to perform a session recover while consuming an unacknowledged message. For e.g. it can be used with either "Consume Operation" or "Guaranteed Endpoint Listener" with AckMode#MANUAL.
+Allows the user to perform a session recover while consuming an unacknowledged message. It can be used for both "Consume Operation" and "Guaranteed Endpoint Listener" with AckMode not being automatic.
 
 Performing a session recover automatically redelivers all the consumed messages that had not being acknowledged before this recover.
 
@@ -601,7 +601,7 @@ Selects which connector configuration to use.
 
 ##### Message Reference Id
 
-Specifies the "Reference Id" property from the Solace Message Properties of the message to be acknowledged.
+Specifies the "Reference Id" property from the Solace Message Properties of the message to be redelivered.
 
 >Note that this is NOT the "Message Id" property!
 

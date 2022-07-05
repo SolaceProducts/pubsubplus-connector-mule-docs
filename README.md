@@ -1,6 +1,6 @@
 # Solace PubSub+ Connector - Mule 4, Documentation and Examples
 
-v1.0.x
+v1.1.x
 
 ## About the Connector
 
@@ -17,7 +17,7 @@ Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and
     * Request-reply (synchronous wait for reply in flow)
     * Publish to topic or queue (direct or persistent)
     * Ack to acknowledge messages anywhere in the Flow
-    * Recover Session to perform session recover while consuming an unacknowledged message
+    * Recover Session will redeliver all already consumed but unacknowledged messages
 
  * PubSub+ Event Portal integration
 

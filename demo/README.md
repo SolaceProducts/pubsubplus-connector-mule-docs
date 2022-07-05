@@ -8,7 +8,7 @@ It contains the following flows:
 * [`requestreply`](#requestreply---request-reply): Request-reply with a responder service
 * [`manualack`](#manualack---manual-acknowledgement): Manual Message Acknowledgement
 * [`jsonmessage`](#jsonmessage---complex-message-json): Complex message - JSON payload
-* [`listenerrecoversession`](#recoversession---recover-session): Recover Session for a Guaranteed Endpoint Listener
+* [`listenerrecoversession`](#recoversession---recover-session): Recover Session
 
 ## How to import & run the examples
 
