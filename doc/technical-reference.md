@@ -3875,7 +3875,7 @@ Boolean
 <td class="tableblock halign-left valign-middle">
 
 If enabled then the next received message even if available, will not be delivered to the flow before the complete processing of the previous message has been completed. This is advantageous when you want to prevent race condition to process any additional messages, while using Recover Session.
-**Note:**<em>Since this restricts processing of one message at a time for the flow. Any concurrency settings if done, will be of no significance, as essentially the max concurrency will only be one.</em>
+**Note:**<em> Since this restricts processing of one message at a time for the flow. Any concurrency settings if done, will be of no significance, as essentially the max concurrency will only be one.</em>
 
 </td>
 
