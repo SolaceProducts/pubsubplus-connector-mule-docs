@@ -3369,7 +3369,7 @@ A retry strategy in case of connectivity errors
 
 * For [Guaranteed Endpoint Listener](#guaranteed-endpoint-listener) source, even if maxConcurrency=1 is used, processing of next messages may still start before Recover Session. In order to prevent this, use [Process next message after Flow completion](#parameters-7) property of the Guaranteed Endpoint Listener.
 
-* In order to ensure there will be no more than one message redelivered at any time from the broker, use the "Max delivered unacknowledged messages = 1" broker queue setting. This is useful in case of setting automatic discard of messages after a given number of redelivery attempts. **Note:** <em>This will trade off message delivery performance vs. strict control of message processing.</em>
+* In order to ensure there will be no more than one message redelivered at any time from the broker, use the "Max delivered unacknowledged messages = 1" broker queue setting. This is useful in case of setting automatic discard of messages after a given number of redelivery attempts. **Note:** <em>This will trade-off message delivery performance vs. strict control of message processing.</em>
 
 </div>
 
