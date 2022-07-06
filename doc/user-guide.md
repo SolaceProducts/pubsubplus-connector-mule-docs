@@ -123,11 +123,11 @@ The connector exposes the following functionality to MuleSoft users and applicat
 
 This document assumes that you are familiar with the MuleSoft Anypoint Platform (including Anypoint Connectors and Anypoint Studio), Mule concepts, elements in a Mule flow, and Global Elements. To get started, review the general [Anypoint Connector Configuration](https://docs.mulesoft.com/connectors/introduction/intro-connector-configuration-overview) section of the MuleSoft documentation.
 
-This document also assumes that you are familiar with [Solace Core Concepts](https://docs.solace.com/PubSub-Basics/Core-Concepts.htm) and [Solace PubSub+ Cloud](https://docs.solace.com/What-Is-PubSub-Cloud.htm). In particular, we recommend that you review following sections from the Solace documentation:
-* [Message Exchange Patterns](https://docs.solace.com/PubSub-Basics/Core-Concepts-Message-Models.htm) 
-* [Message Delivery Modes](https://docs.solace.com/PubSub-Basics/Core-Concepts-Message-Delivery-Modes.htm)
-* [Topics](https://docs.solace.com/PubSub-Basics/Understanding-Topics.htm) 
-* [Endpoints and Queues](https://docs.solace.com/PubSub-Basics/Core-Concepts-Endpoints-Queues.htm), including the _Topic-to-Queue Mapping_ section
+This document also assumes that you are familiar with [Solace Core Concepts](https://docs.solace.com/Get-Started/Core-Concepts.htm) and [Solace PubSub+ Cloud](https://docs.solace.com/Cloud/What-Is-PubSub-Cloud.htm). In particular, we recommend that you review following sections from the Solace documentation:
+* [Message Exchange Patterns](https://docs.solace.com/Get-Started/Core-Concepts-Message-Models.htm) 
+* [Message Delivery Modes](https://docs.solace.com/Get-Started/Core-Concepts-Message-Delivery-Modes.htm)
+* [Topics](https://docs.solace.com/Get-Started/Understanding-Topics.htm) 
+* [Endpoints and Queues](https://docs.solace.com/Get-Started/Core-Concepts-Endpoints-Queues.htm), including the _Topic-to-Queue Mapping_ section
 
 For more information about Solace technology in general please visit these resources:
 
