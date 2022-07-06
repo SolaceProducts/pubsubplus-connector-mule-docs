@@ -6,34 +6,34 @@
 
 <div id="toctitle">Solace PubSub+ Connector Module</div>
 
-*   [Configurations](#_configurations)
+*   [Configurations](#configurations)
     *   [Config](#config)
-*   [Operations](#_operations)
+*   [Operations](#operations)
     * [Ack](#Ack)
     * [Consume](#Consume)
     * [Publish](#Publish)
-    * [Request Reply](#requestReply)
+    * [Request Reply](#request-reply)
     * [Recover Session](#recover-session)
-*   [Sources](#_sources)
+*   [Sources](#sources)
     *   [Guaranteed Endpoint Listener](#guaranteed-endpoint-listener)
     *   [Direct Topic Subscriber](#direct-topic-subscriber)
-*   [Types](#_types)
-    *   [Ack Cache Time Out Parameter](#AckCacheTimeOutParameter)
-    *   [Tls](#Tls)
-    *   [Trust Store](#TrustStore)
-    *   [Key Store](#KeyStore)
+*   [Types](#types)
+    *   [Ack Cache Time Out Parameter](#ack-cache-time-out-parameter)
+    *   [Tls](#tls)
+    *   [Trust Store](#trust-store)
+    *   [Key Store](#key-store)
     *   [Standard Revocation Check](#standard-revocation-check)
     *   [Custom Ocsp Responder](#custom-ocsp-responder)
     *   [Crl File](#crl-file)
-    *   [Reconnection](#Reconnection)
+    *   [Reconnection](#reconnection)
     *   [Reconnect](#reconnect)
     *   [Reconnect Forever](#reconnect-forever)
-    *   [Event Portal Config Parameter](#EventPortalConfigParameter)
-    *   [Expiration Policy](#ExpirationPolicy)
-    *   [Solace Message Properties](#SolaceMessageProperties)
-    *   [Redelivery Policy](#RedeliveryPolicy)
-    *   [Outbound Additional Message Properties](#OutboundAdditionalMessageProperties)
-    *   [Reply To Destination Parameter](#ReplyToDestinationParameter)
+    *   [Event Portal Config Parameter](#event-portal-config-parameter)
+    *   [Expiration Policy](#expiration-policy)
+    *   [Solace Message Properties](#solace-message-properties)
+    *   [Redelivery Policy](#redelivery-policy)
+    *   [Outbound Additional Message Properties](#outbound-additional-message-properties)
+    *   [Reply To Destination Parameter](#reply-to-destination-parameter)
 
 </div>
 
@@ -589,7 +589,7 @@ Maximum wait time for MANUAL_CLIENT Ack
 
 <div class="paragraph">
 
-[Ack Cache Time Out Parameter](#AckCacheTimeOutParameter)
+[Ack Cache Time Out Parameter](#ack-cache-time-out-parameter)
 
 </div>
 
@@ -599,7 +599,9 @@ Maximum wait time for MANUAL_CLIENT Ack
 
 <td class="tableblock halign-left valign-middle">
 
-Maximum time a non-auto acknowledged message can wait to be acknowledged
+Maximum time a non-auto acknowledged message can wait to be acknowledged 
+<br>
+**Note:** <em> If the maximum wait time elapses, the session will be automatically recovered and the unacknowledged message will be redelivered.</em>
 
 </td>
 
@@ -1375,7 +1377,9 @@ Number
 
 <td class="tableblock halign-left valign-middle">
 
-The timeout value.
+The maximum time to wait for a message to be available from the broker
+<br>
+**Note:** In case of a Manual Ack being configured and when no message is available the operation will return an empty message, hence it is recommended to check if the message is not empty before the Ack Operation. Else it will throw exception as the [Message Reference Id](#solace-message-properties) of an empty message would be invalid.
 
 </td>
 
@@ -4421,7 +4425,8 @@ Number
 
 <td class="tableblock halign-left valign-middle">
 
-The timeout value
+The maximum time a non-auto acknowledged message can wait to be acknowledged.
+**Note:** <em> If the maximum wait time elapses, the session will be automatically recovered and the unacknowledged message will be redelivered.</em>
 
 </td>
 

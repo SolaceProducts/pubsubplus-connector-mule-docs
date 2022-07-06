@@ -445,6 +445,8 @@ For additional optional parameters, refer to the [Common Parameters](#common-par
 ##### Time Out
 
 Specifies the maximum wait time for an available message. The default is 1 second.
+<br>
+**Note:** In case of a Manual Ack being configured and when no message is available the operation will return an empty message, hence it is recommended to check if the message is not empty before the Ack Operation. Else it will throw exception as the [Message Reference Id](#message-reference-id) of an empty message would be invalid.
 
 | Parameter field | Description |
 |---|---|
