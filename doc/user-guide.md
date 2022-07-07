@@ -223,15 +223,9 @@ Select the checkbox to override the default configuration of "Maximum wait time 
 
 This is the maximum time allowed to acknowledge receipt of a guaranteed message by the application (MANUAL_CLIENT). Adjust this value if your expected processing time is higher.
 
-###### Notes and Other Considerations
-
-* Since Recover Session will redeliver all unacknowledged messages, use maxConcurrency=1 to limit processing to one message at a time, if ordering is required.
-
-* For [Guaranteed Endpoint Listener](#guaranteed-endpoint-listener) source, even if maxConcurrency=1 is used, processing of next messages may still start before Recover Session. In order to prevent this, use [Process next message after Flow completion](#parameters-7) property of the Guaranteed Endpoint Listener.
-
-* In order to ensure there will be no more than one message redelivered at any time from the broker, use the "Maximum Delivered Unacknowledged Messages per Flow = 1" broker queue setting. This is useful in case of setting automatic discard of messages after a given number of redelivery attempts. **Note:** <em>This will trade-off message delivery performance vs. strict control of message processing.</em>
-
-> Note:  this setting doesn't apply to AUTOMATIC_ON_FLOW_COMPLETION Ack, where there is no such time limit.
+> Notes: <br>
+> * If the maximum wait time elapses, the session will be automatically recovered and the unacknowledged message will be redelivered. Refer [Session Recover](#recover-session-operation). <br>
+> * This setting doesn't apply to AUTOMATIC_ON_FLOW_COMPLETION Ack, where there is no such time limit.
 
 ### Connector Defaults Configuration
 
@@ -614,6 +608,15 @@ Selects which connector configuration to use.
 Specifies the "Reference Id" property from the Solace Message Properties of the message to be redelivered.
 
 >Note that this is NOT the "Message Id" property!
+
+##### Notes and Other Considerations
+
+* Since Recover Session will redeliver all unacknowledged messages, use maxConcurrency=1 to limit processing to one message at a time, if ordering is required.
+
+* For [Guaranteed Endpoint Listener](#guaranteed-endpoint-listener) source, even if maxConcurrency=1 is used, processing of next messages may still start before Recover Session. In order to prevent this, use [Process next message after Flow completion](#parameters-7) property of the Guaranteed Endpoint Listener.
+
+* In order to ensure there will be no more than one message redelivered at any time from the broker, use the "Maximum Delivered Unacknowledged Messages per Flow = 1" broker queue setting. This is useful in case of setting automatic discard of messages after a given number of redelivery attempts. **Note:** <em>This will trade-off message delivery performance vs. strict control of message processing.</em>
+
 
 #### Example
 
