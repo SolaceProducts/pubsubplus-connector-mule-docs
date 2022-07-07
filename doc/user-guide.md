@@ -223,6 +223,14 @@ Select the checkbox to override the default configuration of "Maximum wait time 
 
 This is the maximum time allowed to acknowledge receipt of a guaranteed message by the application (MANUAL_CLIENT). Adjust this value if your expected processing time is higher.
 
+###### Notes and Other Considerations
+
+* Since Recover Session will redeliver all unacknowledged messages, use maxConcurrency=1 to limit processing to one message at a time, if ordering is required.
+
+* For [Guaranteed Endpoint Listener](#guaranteed-endpoint-listener) source, even if maxConcurrency=1 is used, processing of next messages may still start before Recover Session. In order to prevent this, use [Process next message after Flow completion](#parameters-7) property of the Guaranteed Endpoint Listener.
+
+* In order to ensure there will be no more than one message redelivered at any time from the broker, use the "Maximum Delivered Unacknowledged Messages per Flow = 1" broker queue setting. This is useful in case of setting automatic discard of messages after a given number of redelivery attempts. **Note:** <em>This will trade-off message delivery performance vs. strict control of message processing.</em>
+
 > Note:  this setting doesn't apply to AUTOMATIC_ON_FLOW_COMPLETION Ack, where there is no such time limit.
 
 ### Connector Defaults Configuration
@@ -613,8 +621,8 @@ Specifies the "Reference Id" property from the Solace Message Properties of the 
 
 ```xml
 <flow name="listenerrecoversession" doc:id="23279792-da27-47bc-89c4-dd11d057553a" maxConcurrency="1">
-  <solace:queue-listener address="q/recoversession" doc:name="Guaranteed Endpoint Listener" doc:id="8431dce7-162c-412c-81e5-ae877e71144a" config-ref="Solace_PubSub__Connector_Config"/>
-  <logger level="INFO" doc:name="Logger" doc:id="3db06a3e-959d-4534-9d18-fe5138da4b16" message="Running Flow"/>
+  <solace:queue-listener address="q/recoversession" doc:name="Guaranteed Endpoint Listener" doc:id="8431dce7-162c-412c-81e5-ae877e71144a" config-ref="Solace_PubSub__Connector_Config" ackMode="MANUAL_CLIENT"/>
+  <logger level="INFO" doc:name="Logger" doc:id="3db06a3e-959d-4534-9d18-fe5138da4b16" message="Running flow with message payload: #[payload]"/>
   <set-variable value="#[attributes.messageReferenceId]" doc:name="Set Variable" doc:id="01b6baf1-bdce-4a9e-87ec-18ec2741a4ae" variableName="ack_id"/>
   <raise-error doc:name="Raise error" doc:id="7636b0c3-e14a-4d5b-9b3b-73b057f951f8" type="MULE:SECURITY"/>
   <solace:ack doc:name="Ack" doc:id="ee7adb28-feb7-4930-ac9a-d228ea47688d" config-ref="Solace_PubSub__Connector_Config" messageRefId="#[vars.ack_id]"/>
