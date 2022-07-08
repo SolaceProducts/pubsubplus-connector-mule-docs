@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:solace="http://www.mulesoft.org/schema/mule/solace" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/solace http://www.mulesoft.org/schema/mule/solace/current/mule-solace.xsd">
+
+	<solace:config name="Solace_PubSub__Connector_Config" doc:name="Solace PubSub+ Connector Config" doc:id="442629c7-133b-44e9-983a-5f84f4a56979" >
+		<solace:connection msgVPN="default" brokerHost="tcp://localhost:55555" clientUserName="default" password="default" >
+		</solace:connection>
+	</solace:config>
+
+	<flow name="listenerrecoversession" doc:id="23279792-da27-47bc-89c4-dd11d057553a" maxConcurrency="1">
+		<solace:queue-listener address="q/recoversession" doc:name="Guaranteed Endpoint Listener" doc:id="8431dce7-162c-412c-81e5-ae877e71144a" config-ref="Solace_PubSub__Connector_Config" ackMode="MANUAL_CLIENT"/>
+		<logger level="INFO" doc:name="Logger" doc:id="3db06a3e-959d-4534-9d18-fe5138da4b16" message="Running flow with message payload: #[payload]"/>
+		<set-variable value="#[attributes.messageReferenceId]" doc:name="Set Variable" doc:id="01b6baf1-bdce-4a9e-87ec-18ec2741a4ae" variableName="ack_id"/>
+		<raise-error doc:name="Raise error" doc:id="7636b0c3-e14a-4d5b-9b3b-73b057f951f8" type="MULE:SECURITY"/>
+		<solace:ack doc:name="Ack" doc:id="ee7adb28-feb7-4930-ac9a-d228ea47688d" config-ref="Solace_PubSub__Connector_Config" messageRefId="#[vars.ack_id]"/>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="2825da0f-307f-4a8f-a395-4c924c5b8209">
+				<solace:recover-session doc:name="Recover session" doc:id="d141546d-5e97-471e-bbcf-fc1185d33a2f" config-ref="Solace_PubSub__Connector_Config" messageRefId="#[vars.ack_id]"/>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+
+</mule>

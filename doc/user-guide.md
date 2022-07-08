@@ -60,6 +60,11 @@ Contents:
           + [Request Message](#request-message)
           + [Time Out](#time-out-1)
       - [Example](#example-3)
+    + [Recover Session](#recover-session-operation)
+        - [Required Parameters](#required-parameters-4)
+            * [Connector Configuration](#connector-configuration-4)
+            * [Message Reference Id](#message-reference-id-4)
+        - [Example](#example-4)    
   * [Sources](#sources)
     + [Direct Topic Subscriber source](#direct-topic-subscriber-source)
       - [Required Parameters](#required-parameters-4)
@@ -95,10 +100,11 @@ The connector exposes the following functionality to MuleSoft users and applicat
 
 **Operations**
 
-*	Publish: publishes a direct message to a topic or a persistent message to a queue
-*	Consume: consumes a single guaranteed message from an endpoint (Solace queue)
-*	Request-Reply: a blocking operation that sends a message to a topic or queue (configurable) and waits for a response on an automatically created temporary topic or queue
-*	Ack: acknowledges receipt of a guaranteed message
+* Publish: publishes a direct message to a topic or a persistent message to a queue
+* Consume: consumes a single guaranteed message from an endpoint (Solace queue)
+* Request-Reply: a blocking operation that sends a message to a topic or queue (configurable) and waits for a response on an automatically created temporary topic or queue
+* Ack: acknowledges receipt of a guaranteed message
+* Recover Session: perform session recover when consuming an unacknowledged Message
 
 </br>
 
@@ -117,11 +123,11 @@ The connector exposes the following functionality to MuleSoft users and applicat
 
 This document assumes that you are familiar with the MuleSoft Anypoint Platform (including Anypoint Connectors and Anypoint Studio), Mule concepts, elements in a Mule flow, and Global Elements. To get started, review the general [Anypoint Connector Configuration](https://docs.mulesoft.com/connectors/introduction/intro-connector-configuration-overview) section of the MuleSoft documentation.
 
-This document also assumes that you are familiar with [Solace Core Concepts](https://docs.solace.com/PubSub-Basics/Core-Concepts.htm) and [Solace PubSub+ Cloud](https://docs.solace.com/What-Is-PubSub-Cloud.htm). In particular, we recommend that you review following sections from the Solace documentation:
-* [Message Exchange Patterns](https://docs.solace.com/PubSub-Basics/Core-Concepts-Message-Models.htm) 
-* [Message Delivery Modes](https://docs.solace.com/PubSub-Basics/Core-Concepts-Message-Delivery-Modes.htm)
-* [Topics](https://docs.solace.com/PubSub-Basics/Understanding-Topics.htm) 
-* [Endpoints and Queues](https://docs.solace.com/PubSub-Basics/Core-Concepts-Endpoints-Queues.htm), including the _Topic-to-Queue Mapping_ section
+This document also assumes that you are familiar with [Solace Core Concepts](https://docs.solace.com/Get-Started/Core-Concepts.htm) and [Solace PubSub+ Cloud](https://docs.solace.com/Cloud/What-Is-PubSub-Cloud.htm). In particular, we recommend that you review following sections from the Solace documentation:
+* [Message Exchange Patterns](https://docs.solace.com/Get-Started/Core-Concepts-Message-Models.htm) 
+* [Message Delivery Modes](https://docs.solace.com/Get-Started/Core-Concepts-Message-Delivery-Modes.htm)
+* [Topics](https://docs.solace.com/Get-Started/Understanding-Topics.htm) 
+* [Endpoints and Queues](https://docs.solace.com/Get-Started/Core-Concepts-Endpoints-Queues.htm), including the _Topic-to-Queue Mapping_ section
 
 For more information about Solace technology in general please visit these resources:
 
@@ -217,7 +223,9 @@ Select the checkbox to override the default configuration of "Maximum wait time 
 
 This is the maximum time allowed to acknowledge receipt of a guaranteed message by the application (MANUAL_CLIENT). Adjust this value if your expected processing time is higher.
 
-> Note:  this setting doesn't apply to AUTOMATIC_ON_FLOW_COMPLETION Ack, where there is no such time limit.
+> Notes: <br>
+> * If the maximum wait time elapses, the session will be automatically recovered and the unacknowledged message will be redelivered. Refer [Session Recover](#recover-session-operation). <br>
+> * This setting doesn't apply to AUTOMATIC_ON_FLOW_COMPLETION Ack, where there is no such time limit.
 
 ### Connector Defaults Configuration
 
@@ -329,7 +337,6 @@ These parameters appear in the "Content Type and Encoding" parameter group. The 
 |Encoding | Overrides the default encoding for the connector for this component |
 
 Refer to the [default encoding](#encoding) and the [default content type](#content-type) settings for the connector.
-
 </br>
 
 ## Common Attributes for Inbound Messages
@@ -440,6 +447,8 @@ For additional optional parameters, refer to the [Common Parameters](#common-par
 ##### Time Out
 
 Specifies the maximum wait time for an available message. The default is 1 second.
+<br>
+>**Note:** In case of a Manual Ack being configured and when no message is available the operation will return an empty message, hence it is recommended to check if the message is not empty before the Ack Operation. Else it will throw exception as the [Message Reference Id](#message-reference-id) of an empty message would be invalid.
 
 | Parameter field | Description |
 |---|---|
@@ -580,6 +589,56 @@ After timeout an error condition is raised which can be handled by an Error Hand
 
 For more details refer to the [Request Reply](../demo/README.md#requestreply---request-reply) example.
 
+### Recover Session Operation
+
+Allows the user to perform a session recover while consuming an unacknowledged message. It can be used for both "Consume Operation" and "Guaranteed Endpoint Listener" with AckMode not being automatic.
+
+Performing a session recover automatically redelivers all the consumed messages that had not being acknowledged before this recover.
+
+#### Required Parameters
+
+The following minimum parameters are required. There are no optional parameters.
+
+##### Connector Configuration
+
+Selects which connector configuration to use.
+
+##### Message Reference Id
+
+Specifies the "Reference Id" property from the Solace Message Properties of the message to be redelivered.
+
+>Note that this is NOT the "Message Id" property!
+
+##### Notes and Other Considerations
+
+* Since Recover Session will redeliver all unacknowledged messages, use maxConcurrency=1 to limit processing to one message at a time, if ordering is required.
+
+* For [Guaranteed Endpoint Listener](#guaranteed-endpoint-listener) source, even if maxConcurrency=1 is used, processing of next messages may still start before Recover Session. In order to prevent this, use [Process next message after Flow completion](#parameters-7) property of the Guaranteed Endpoint Listener.
+
+* In order to ensure there will be no more than one message redelivered at any time from the broker, use the "Maximum Delivered Unacknowledged Messages per Flow = 1" broker queue setting. This is useful in case of setting automatic discard of messages after a given number of redelivery attempts. **Note:** <em>This will trade-off message delivery performance vs. strict control of message processing.</em>
+
+
+#### Example
+
+![alt text](/doc/images/ListenerRecoverSession.png "Recover Session Example")
+
+```xml
+<flow name="listenerrecoversession" doc:id="23279792-da27-47bc-89c4-dd11d057553a" maxConcurrency="1">
+  <solace:queue-listener address="q/recoversession" doc:name="Guaranteed Endpoint Listener" doc:id="8431dce7-162c-412c-81e5-ae877e71144a" config-ref="Solace_PubSub__Connector_Config" ackMode="MANUAL_CLIENT"/>
+  <logger level="INFO" doc:name="Logger" doc:id="3db06a3e-959d-4534-9d18-fe5138da4b16" message="Running flow with message payload: #[payload]"/>
+  <set-variable value="#[attributes.messageReferenceId]" doc:name="Set Variable" doc:id="01b6baf1-bdce-4a9e-87ec-18ec2741a4ae" variableName="ack_id"/>
+  <raise-error doc:name="Raise error" doc:id="7636b0c3-e14a-4d5b-9b3b-73b057f951f8" type="MULE:SECURITY"/>
+  <solace:ack doc:name="Ack" doc:id="ee7adb28-feb7-4930-ac9a-d228ea47688d" config-ref="Solace_PubSub__Connector_Config" messageRefId="#[vars.ack_id]"/>
+  <error-handler >
+    <on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="2825da0f-307f-4a8f-a395-4c924c5b8209">
+      <solace:recover-session doc:name="Recover session" doc:id="d141546d-5e97-471e-bbcf-fc1185d33a2f" config-ref="Solace_PubSub__Connector_Config" messageRefId="#[vars.ack_id]"/>
+    </on-error-propagate>
+  </error-handler>
+</flow>
+```
+
+For more details refer to the [Recover Session](../demo/README.md#recoversession---recover-session) example.
+
 ## Sources
 
 Sources trigger flows every time a message is received.
@@ -649,7 +708,12 @@ Specifies where to consume the message from and how.
 
 #### Optional Parameters
 
-For optional parameters, refer to the [Common Parameters](#common-parameters) section.
+##### Message Processing Parameter [Under "Advanced" tab]
+| Parameter field                            | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+|--------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Process next message after Flow completion | If enabled then the next received message even if available, will not be delivered to the flow before the complete processing of the previous message has been completed. This is advantageous when you want to prevent race condition to process any additional messages, while using Recover Session. <br/> <em> **Note**: Since this restricts processing of one message at a time for the flow. Any concurrency settings if done, will be of no significance, as essentially the max concurrency will only be one. </em> |
+
+For other optional parameters, refer to the [Common Parameters](#common-parameters) section.
 
 #### Example
 

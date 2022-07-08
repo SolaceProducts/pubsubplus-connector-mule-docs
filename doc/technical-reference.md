@@ -6,33 +6,34 @@
 
 <div id="toctitle">Solace PubSub+ Connector Module</div>
 
-*   [Configurations](#_configurations)
+*   [Configurations](#configurations)
     *   [Config](#config)
-*   [Operations](#_operations)
-    *   [Ack](#Ack)
-    *   [Consume](#Consume)
-    *   [Publish](#Publish)
-    *   [Request Reply](#requestReply)
-*   [Sources](#_sources)
-    *   [Guaranteed Endpoint Listener](#queue-listener)
-    *   [Direct Topic Subscriber](#topic-listener)
-*   [Types](#_types)
-    *   [Ack Cache Time Out Parameter](#AckCacheTimeOutParameter)
-    *   [Tls](#Tls)
-    *   [Trust Store](#TrustStore)
-    *   [Key Store](#KeyStore)
+*   [Operations](#operations)
+    * [Ack](#Ack)
+    * [Consume](#Consume)
+    * [Publish](#Publish)
+    * [Request Reply](#request-reply)
+    * [Recover Session](#recover-session)
+*   [Sources](#sources)
+    *   [Guaranteed Endpoint Listener](#guaranteed-endpoint-listener)
+    *   [Direct Topic Subscriber](#direct-topic-subscriber)
+*   [Types](#types)
+    *   [Ack Cache Time Out Parameter](#ack-cache-time-out-parameter)
+    *   [Tls](#tls)
+    *   [Trust Store](#trust-store)
+    *   [Key Store](#key-store)
     *   [Standard Revocation Check](#standard-revocation-check)
     *   [Custom Ocsp Responder](#custom-ocsp-responder)
     *   [Crl File](#crl-file)
-    *   [Reconnection](#Reconnection)
+    *   [Reconnection](#reconnection)
     *   [Reconnect](#reconnect)
     *   [Reconnect Forever](#reconnect-forever)
-    *   [Event Portal Config Parameter](#EventPortalConfigParameter)
-    *   [Expiration Policy](#ExpirationPolicy)
-    *   [Solace Message Properties](#SolaceMessageProperties)
-    *   [Redelivery Policy](#RedeliveryPolicy)
-    *   [Outbound Additional Message Properties](#OutboundAdditionalMessageProperties)
-    *   [Reply To Destination Parameter](#ReplyToDestinationParameter)
+    *   [Event Portal Config Parameter](#event-portal-config-parameter)
+    *   [Expiration Policy](#expiration-policy)
+    *   [Solace Message Properties](#solace-message-properties)
+    *   [Redelivery Policy](#redelivery-policy)
+    *   [Outbound Additional Message Properties](#outbound-additional-message-properties)
+    *   [Reply To Destination Parameter](#reply-to-destination-parameter)
 
 </div>
 
@@ -588,7 +589,7 @@ Maximum wait time for MANUAL_CLIENT Ack
 
 <div class="paragraph">
 
-[Ack Cache Time Out Parameter](#AckCacheTimeOutParameter)
+[Ack Cache Time Out Parameter](#ack-cache-time-out-parameter)
 
 </div>
 
@@ -598,7 +599,9 @@ Maximum wait time for MANUAL_CLIENT Ack
 
 <td class="tableblock halign-left valign-middle">
 
-Maximum time a non-auto acknowledged message can wait to be acknowledged
+Maximum time a non-auto acknowledged message can wait to be acknowledged 
+<br>
+**Note:** <em> If the maximum wait time elapses, the session will be automatically recovered and the unacknowledged message will be redelivered.</em>
 
 </td>
 
@@ -1374,7 +1377,9 @@ Number
 
 <td class="tableblock halign-left valign-middle">
 
-The timeout value.
+The maximum time to wait for a message to be available from the broker
+<br>
+**Note:** In case of a Manual Ack being configured and when no message is available the operation will return an empty message, hence it is recommended to check if the message is not empty before the Ack Operation. Else it will throw exception as the [Message Reference Id](#solace-message-properties) of an empty message would be invalid.
 
 </td>
 
@@ -3170,6 +3175,211 @@ Any
 
 </div>
 
+<div class="sectionbody">
+
+<div class="sect2">
+
+### Recover Session
+
+<div class="paragraph">
+
+`<solace:recover-session>`
+
+</div>
+
+<div class="paragraph">
+
+Operation that allows  the user to perform a session recover when consuming an unacknowledged message.
+
+</div>
+
+<div class="sect3">
+
+#### Parameters
+
+<table class="tableblock frame-all grid-all spread"><colgroup><col style="width: 20%;"> <col style="width: 20%;"> <col style="width: 35%;"> <col style="width: 20%;"> <col style="width: 5%;"></colgroup>
+
+<thead>
+
+<tr>
+
+<th class="tableblock halign-left valign-middle">Name</th>
+
+<th class="tableblock halign-left valign-middle">Type</th>
+
+<th class="tableblock halign-left valign-middle">Description</th>
+
+<th class="tableblock halign-left valign-middle">Default Value</th>
+
+<th class="tableblock halign-center valign-middle">Required</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+Configuration
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+String
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+The name of the configuration to use.
+
+</td>
+
+<td class="tableblock halign-left valign-middle"></td>
+
+<td class="tableblock halign-center valign-middle">
+
+**x**
+
+</td>
+
+</tr>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+Message Reference Id
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+<div>
+
+<div class="paragraph">
+
+String
+
+</div>
+
+</div>
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+The "Reference Id" property from the Solace Message Properties of the message to be acknowledged
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+</td>
+
+<td class="tableblock halign-center valign-middle">
+
+**x**
+
+</td>
+
+</tr>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+Reconnection Strategy
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+<div>
+
+<div class="ulist">
+
+*   [Reconnect](#reconnect)
+
+*   [Reconnect Forever](#reconnect-forever)
+
+</div>
+
+</div>
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+A retry strategy in case of connectivity errors
+
+</td>
+
+<td class="tableblock halign-left valign-middle"></td>
+
+<td class="tableblock halign-center valign-middle"></td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="sect3">
+
+#### For Configurations.
+
+<div class="ulist">
+
+*   [Config](#config)
+
+</div>
+
+</div>
+
+<div class="sect3">
+
+#### Throws
+
+<div class="ulist">
+
+* SOLACE:GENERIC_ERROR
+
+* SOLACE:SESSION_RECOVER
+
+* SOLACE:RETRY_EXHAUSTED
+
+* SOLACE:INVALID_CONFIGURATION
+
+* SOLACE:CONNECTIVITY
+
+</div>
+
+</div>
+
+<div class="sect3">
+
+#### Notes and Other Considerations
+
+<div class="ulist">
+
+Refer [here](user-guide.md#notes-and-other-considerations)
+
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
 <div class="sect1">
 
 ## Sources
@@ -3635,6 +3845,43 @@ A retry strategy in case of connectivity errors
 </td>
 
 <td class="tableblock halign-left valign-middle"></td>
+
+<td class="tableblock halign-center valign-middle"></td>
+
+</tr>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+Process next message after Flow completion 
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+<div>
+
+<div class="paragraph">
+
+Boolean
+
+</div>
+
+</div>
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+If enabled then the next received message even if available, will not be delivered to the flow before the complete processing of the previous message has been completed. This is advantageous when you want to prevent race condition to process any additional messages, while using Recover Session.
+**Note:**<em> Since this restricts processing of one message at a time for the flow. Any concurrency settings if done, will be of no significance, as essentially the max concurrency will only be one.</em>
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+false
+</td>
 
 <td class="tableblock halign-center valign-middle"></td>
 
@@ -4174,7 +4421,8 @@ Number
 
 <td class="tableblock halign-left valign-middle">
 
-The timeout value
+The maximum time a non-auto acknowledged message can wait to be acknowledged.
+**Note:** <em> If the maximum wait time elapses, the session will be automatically recovered and the unacknowledged message will be redelivered.</em>
 
 </td>
 
