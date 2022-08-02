@@ -1,6 +1,6 @@
 # Solace PubSub+ Connector - Mule 4, Documentation and Examples
 
-v1.0.x
+v1.1.x
 
 ## About the Connector
 
@@ -10,13 +10,14 @@ Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and
 
 * Native access to PubSub+ Platform in the Mule Palette
 
-*  PubSub+ Event Broker (Six Operations and Sources supported):
+*  PubSub+ Event Broker (Seven Operations and Sources supported):
     * Consume event/message (triggered consumer)
     * Direct Topic Subscriber (push direct message consumer)
     * Guaranteed Endpoint Listener (push GM consumer)
     * Request-reply (synchronous wait for reply in flow)
     * Publish to topic or queue (direct or persistent)
     * Ack to acknowledge messages anywhere in the Flow
+    * Recover Session will redeliver all already consumed but unacknowledged messages
 
  * PubSub+ Event Portal integration
 
@@ -53,7 +54,7 @@ MuleSoft disclaims any support obligation for MuleSoft Certified Connectors. By 
 <dependency>
   <groupId>com.solace.connector</groupId>
   <artifactId>solace-mulesoft-connector</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
   <classifier>mule-plugin</classifier>
 </dependency>
 ```
@@ -73,7 +74,7 @@ Connector
 Published by: MuleSoft Partner
 </br>
 
-Published on: October, 2021
+Published on: August, 2022
 </br>
 
 Level: MuleSoft-Certified
