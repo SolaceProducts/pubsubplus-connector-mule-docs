@@ -74,7 +74,7 @@ Connector
 Published by: MuleSoft Partner
 </br>
 
-Published on: October, 2021
+Published on: August, 2022
 </br>
 
 Level: MuleSoft-Certified
