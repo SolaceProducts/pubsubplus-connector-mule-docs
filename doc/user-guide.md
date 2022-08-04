@@ -136,7 +136,7 @@ For more information about Solace technology in general please visit these resou
 
 ### Getting a Solace PubSub+ Messaging Service
 
-If you don't already have a Solace PubSub+ Event Broker available, use one of the options listed in the [Try PubSub+ Event Broker](https://docs.solace.com/PubSub-Basics/Getting-Started-Try-Broker.htm) section of the Solace documentation to quickly spin up a free Solace messaging service. To start using the connector, you'll need to supply the following connection properties for your broker (refer to the setup guide of your broker for information on how to obtain them):
+If you don't already have a Solace PubSub+ Event Broker available, use one of the options listed in the [Try PubSub+ Event Broker](https://docs.solace.com/Get-Started/Getting-Started-Try-Broker.htm) section of the Solace documentation to quickly spin up a free Solace messaging service. To start using the connector, you'll need to supply the following connection properties for your broker (refer to the setup guide of your broker for information on how to obtain them):
 
 | Property | Description |
 |---|---|
