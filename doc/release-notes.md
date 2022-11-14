@@ -2,6 +2,28 @@
 
 Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and PubSub+ Event Portal (event management) within MuleSoft Anypoint Platform, to make your MuleSoft integrations more reliable, agile, and event-driven.  
 
+## v1.1.0
+**August 1, 2022**
+### Compatibility
+
+| Application/Service | Version |
+|---|---|
+| Mule Runtime | 4.3 and higher |
+| Studio Version | 7.9 and higher |
+| PubSub+ Event Broker | 9.1 and higher |
+| Java | 1.8 and later |
+
+### Fixed Issues
+
+* On failure, recover and redeliver messages which are unacknowledged. (SOL-69546)
+* Auto recover session when maximum wait time for Manual Ack mode elapses. (SOL-71877)
+
+### Key Features
+
+**Sources**
+
+*	Guaranteed Endpoint Listener: If enabled then the next received message even if available, will not be delivered to the flow before the complete processing of the previous message has been completed. This is advantageous when you want to prevent race condition to process any additional messages, while using Recover Session.
+
 ## v1.0.2
 **May 4, 2022**
 ### Compatibility
