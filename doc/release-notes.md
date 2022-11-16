@@ -2,6 +2,36 @@
 
 Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and PubSub+ Event Portal (event management) within MuleSoft Anypoint Platform, to make your MuleSoft integrations more reliable, agile, and event-driven.  
 
+## v1.2.0
+**December 1, 2022**
+### Compatibility
+
+| Application/Service | Version |
+|---|---|
+| Mule Runtime | 4.3 and higher |
+| Studio Version | 7.9 and higher |
+| PubSub+ Event Broker | 9.1 and higher |
+| Java | 1.8 and later |
+
+### Fixed Issues
+
+* Fixed the unbinding of connector on every message received when Ack Mode is set to AUTOMATIC_ON_FLOW_COMPLETION. (SOL-79397)
+* Multiple start/stop of Guaranteed Endpoint Listener sourced flows is now fixed. (SOL-73393)
+* Reconnection strategy is now fixed. (SOL-65619)
+* Upgraded library dependency `com.solacesystems:sol-jcsmp` to 10.16.0.
+
+### New Features
+
+**Sources**
+
+* Added a new source type "Guaranteed Endpoint Polling Listener" which retrieves fixed number of messages at the scheduled polling interval and dispatches to the flow individually.
+* Added support for Error Handling using the Circuit Breaker pattern for the "Guaranteed Endpoint Polling Listener" and "Guaranteed Endpoint Listener".
+* Added support for message consumption published with Content-Type as "text". (SOL-74548)
+
+**Operations**
+
+* Support payload types of CursorStreamProvider and OutputHandler for Publish Operation.
+
 ## v1.1.0
 **August 1, 2022**
 ### Compatibility
@@ -93,7 +123,7 @@ Add this dependency to your application pom.xml
 <dependency>
 	<groupId>com.solace.connector</groupId>
 	<artifactId>solace-mulesoft-connector</artifactId>
-	<version>1.0.0</version>
+	<version>1.2.0</version>
 	<classifier>mule-plugin</classifier>
 </dependency>
 ```

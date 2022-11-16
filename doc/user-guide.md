@@ -78,7 +78,12 @@ Contents:
         * [Endpoint](#endpoint-1)
       - [Optional Parameters](#optional-parameters-4)
       - [Example](#example-5)
-  * [Error Handling](#error-handling)
+    + [Guaranteed Endpoint Polling Listener source](#guaranteed-endpoint-polling-listener-source)
+      - [Required Parameters](#required-parameters-5)
+        * [Connector Configuration](#connector-configuration-5)
+        * [Endpoint](#endpoint-1)
+      - [Optional Parameters](#optional-parameters-4)
+      - [Example](#example-5)
 
 </br>
 
@@ -95,8 +100,9 @@ The connector exposes the following functionality to MuleSoft users and applicat
 
 **Sources**
 
-*	Direct Topic Subscriber: triggered when a direct message is received on a set of topic subscriptions
-*	Guaranteed Endpoint Listener: triggered when a guaranteed message is received on a queue
+* Direct Topic Subscriber: triggered when a direct message is received on a set of topic subscriptions
+* Guaranteed Endpoint Listener: triggered when a guaranteed message is received on a queue
+* Guaranteed Endpoint Polling Listener: triggered at a scheduled rate to consume a fixed number of messages (no more than 10 at a schedule) on a queue
 
 **Operations**
 
@@ -274,6 +280,68 @@ This parameter should be set for non-default organizations and is used to determ
 Although this is not a secret setting, if your org prefix is different than the default we recommend that you set the global `SOLACE_EVENTPORTAL_CONSOLE_ORG_PREFIX` environment variable, similar to the mechanism used to set the API Token.
 
 </br>
+
+### Circuit Breaker Configuration
+
+This provides the source listeners like Guaranteed Endpoint Listener and Guaranteed Endpoint Polling Listener with the circuit breaking capability, which enables you to control how the connector handles errors that occur while processing a consumed message. By default this feature is disabled.
+
+If a flow is using an external service which becomes unavailable(or unable to process the messages), at a given point in time, every attempt to process a message would result in failure. To prevent such continuous failure of messages, you can notify the listener to stop consuming more messages for a defined period of time.
+
+The circuit breaker configuration can be either Global or Private, however the parameters remain the same.
+
+| Parameter field   | Description                                                                                                                           | Default Value | Required |
+|-------------------|---------------------------------------------------------------------------------------------------------------------------------------|---------------|----------|
+| On error types    | Error types occurring during the flow execution, that result in failure of the circuit. By default, all errors are result in failure. |               | No       |
+| Errors threshold  | The total count of errors that must occur of the types (On error types) considered for circuit failure.                               |               | Yes      |
+| Trip timeout      | The duration for which the circuit must remain open after the Errors threshold is reached.                                            |               | Yes      |
+| Trip timeout unit | The time unit for the trip timeout value.                                                                                             | MILLISECONDS  | No       |
+
+> **Note**: If maxConcurrency for the flow is >1, then the circuit can trip to OPEN for the count of errors exceeding the "Errors threshold" depending on how many messages are already delivered to the flow by the listener. 
+
+#### Global Circuit Breaker
+
+Used when you want to share the circuit state across multiple listeners, as if listeners are part of the same "circuit".
+
+To configure:
+
+1. In Anypoint Studio, click the **Global Elements** tab in the canvas.
+2. Select **Create** > **Component Configuration** > **Circuit breaker** (one with the solace logo).
+
+![alt text](/doc/images/CircuitBreakerConfig.png "Global Circuit Breaker Config")
+
+```XML
+<solace:circuit-breaker name="Circuit_breaker" tripTimeout="60000" doc:name="Circuit breaker" onErrorTypes="HTTP:TIMEOUT,HTTP:INTERNAL_SERVER_ERROR" errorsThreshold="7" />
+```
+
+To reference a Global Cricuit Breaker:
+
+1. Select the respective Listener source in the canvas.
+2. Click the **Advanced** tab.
+3. Select **Circuit breaker** > **Global Reference** and select the desired circuit breaker configuration from the list.
+
+![alt text](/doc/images/CbGlobalReference.png "Circuit Breaker Global Reference Usage")
+
+```XML
+<solace:polling-queue-listener doc:name="Guaranteed Endpoint Polling Listener" config-ref="Solace_PubSub__Connector_Config" address="test/q" circuitBreaker="Circuit_breaker">
+```
+
+#### Private Circuit Breaker
+
+Used when you want to define a circuit breaker internal to a single Listener source and hence the declaration is specific to the particular flow where the Listener source is declared.
+
+To configure:
+
+1. Select the respective Listener source in the canvas.
+2. Click the **Advanced** tab.
+3. Select **Circuit breaker** > **Edit inline** and complete the fields
+
+![alt text](/doc/images/CbEditInline.png "Circuit Breaker Edit-inline")
+
+```XML
+<solace:polling-queue-listener doc:name="Guaranteed Endpoint Polling Listener" config-ref="Solace_PubSub__Connector_Config" address="test/q">
+	<solace:circuit-breaker onErrorTypes="HTTP:CONNECTIVITY" errorsThreshold="5" tripTimeout="30000" />
+</solace:polling-queue-listener>
+```
 
 ## Accelerate Application Development Using the Event Catalog
 
@@ -591,9 +659,9 @@ For more details refer to the [Request Reply](../demo/README.md#requestreply---r
 
 ### Recover Session Operation
 
-Allows the user to perform a session recover while consuming an unacknowledged message. It can be used for both "Consume Operation" and "Guaranteed Endpoint Listener" with AckMode not being automatic.
+Allows the user to perform a session recover while consuming an unacknowledged message. It can be used for both "Consume Operation" and "Guaranteed Endpoint Listener" with AckMode being MANUAL_CLIENT.
 
-Performing a session recover automatically redelivers all the consumed messages that had not being acknowledged before this recover.
+Performing a session recover redelivers all the consumed messages that had not being acknowledged before this recover.
 
 #### Required Parameters
 
@@ -708,10 +776,11 @@ Specifies where to consume the message from and how.
 
 #### Optional Parameters
 
-##### Message Processing Parameter [Under "Advanced" tab]
-| Parameter field                            | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-|--------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Process next message after Flow completion | If enabled then the next received message even if available, will not be delivered to the flow before the complete processing of the previous message has been completed. This is advantageous when you want to prevent race condition to process any additional messages, while using Recover Session. <br/> <em> **Note**: Since this restricts processing of one message at a time for the flow. Any concurrency settings if done, will be of no significance, as essentially the max concurrency will only be one. </em> |
+##### Message Processing Parameter and Circuit Breaker [Under "Advanced" tab]
+| Parameter field                            | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Default |
+|--------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
+| Process next message after Flow completion | If enabled then the next received message even if available, will not be delivered to the flow before the complete processing of the previous message has been completed. This is advantageous when you want to prevent race condition to process any additional messages, while using Recover Session. <br/> <em> **Note**: Since this restricts processing of one message at a time for the flow. Any concurrency settings if done, will be of no significance, as essentially the max concurrency will only be one. </em> | False   |
+| Circuit breaker                            | Enables you to control how the connector handles the errors that occur while processing a consumed message. You can choose to use a Global or define an In-line configuration. See [Circuit Breaker Configuration](#Circuit Breaker Configuration)                                                                                                                                                                                                                                                                           | None    |
 
 For other optional parameters, refer to the [Common Parameters](#common-parameters) section.
 
@@ -727,4 +796,41 @@ For other optional parameters, refer to the [Common Parameters](#common-paramete
 ```
 
 For more details, refer to the [Simple Sender Listener](../demo/README.md#simplesenderlistener---listen-for-and-send-messages) example.
+
+### Guaranteed Endpoint Polling Listener Source
+
+This is a polling source which can be used to receive guaranteed messages from the PubSub+ Event Broker from a queue at a fixed scheduling rate. Every time the poll is triggered, the source retrieves in range of 1 to 10 messages to dispatch to the flow individually.  
+
+All the required and optional parameter of [Guaranteed Endpoint Listener Source] applies here as well, in addition to the following optional parameters.
+
+#### Other Optional Parameters
+
+| Parameter field     | Description                                                                                                                                                                                                                                                                                                                                         | Default Value           |
+|---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------|
+| Fetch size          | The maximum number of messages (1-10) to fetch on each polling execution.                                                                                                                                                                                                                                                                           | 10                      |
+| Scheduling strategy | Scheduling strategy for triggering the message fetch from the service. It has two options: Fixed Frequency and Cron.                                                                                                                                                                                                                                | Fixed Frequency         |
+| Frequency           | It is the polling frequency, when Scheduling Strategy is set to Fixed Frequency.                                                                                                                                                                                                                                                                    | 1000                    |
+| Start delay         | It is the amount of time for the scheduler to wait before starting, when Scheduling Strategy is set to Fixed Frequency.                                                                                                                                                                                                                             | 0                       |
+| Time unit           | It is unit of time for Frequency and Start delay, when Scheduling Strategy is set to Fixed Frequency.                                                                                                                                                                                                                                               | MILLISECONDS            |
+| Expression          | It is the cron expression to be defined, when Scheduling Strategy is set to Cron. More about this can be found in the Mule Docs here https://docs.mulesoft.com/mule-runtime/4.4/scheduler-concept#cron-expressions.                                                                                                                                 |                         |
+| Time Zone           | It is the ID of the time zone in which the expression is based, when Scheduling Strategy is set to Cron. For Cron configurations, Java timeZone values are supported. You should avoid the Java abbreviations, such as PST and AGT, and instead use the full-name Java equivalents, such as America/Los_Angeles and America/Argentina/Buenos_Aires. | System Default Timezone |
+
+For other optional parameters, refer to the [Common Parameters](#common-parameters) section.
+
+#### Example
+
+![alt text](/doc/images/GuaranteedEndpointPollingListener.png "Guaranteed Endpoint Polling Listener")
+
+```xml
+<flow name="guaranteedPollingListener" >
+  <solace:polling-queue-listener doc:name="Guaranteed Endpoint Polling Listener" config-ref="Solace_PubSub__Connector_Config" address="test/q">
+    <scheduling-strategy >
+      <fixed-frequency />
+    </scheduling-strategy>
+  </solace:polling-queue-listener>
+  <logger level="INFO" category="GUARANTEED-POLLING-SOURCE - " message="#[payload]"/>
+</flow>
+```
+
+For more details, refer to the [Polling Listener](../demo/README.md#pollinglistenerfixedfrequency---polling-listener-fixed-frequency) example.
 

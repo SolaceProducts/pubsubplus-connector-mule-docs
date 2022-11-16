@@ -3189,7 +3189,7 @@ Any
 
 <div class="paragraph">
 
-Operation that allows  the user to perform a session recover when consuming an unacknowledged message.
+Operation that allows  the user to perform a session recover when consuming an unacknowledged message. It applies only when Ack Mode is selected to MANUAL_CLIENT.
 
 </div>
 
@@ -3881,6 +3881,405 @@ If enabled then the next received message even if available, will not be deliver
 
 <td class="tableblock halign-left valign-middle">
 false
+</td>
+
+<td class="tableblock halign-center valign-middle"></td>
+
+</tr>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+Circuit breaker
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+<div>
+
+<div class="paragraph">
+
+Circuit breaker
+
+</div>
+
+</div>
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+Enables you to control how the connector handles the errors that occur while processing a consumed message. You can choose to use a Global or define an In-line configuration. For details see [Circuit Breaker Configuration Parameters](#circuit-breaker-configuration-parameter)
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+None
+</td>
+
+<td class="tableblock halign-center valign-middle"></td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="sect3">
+
+#### Output
+
+<table class="tableblock frame-all grid-all spread"><colgroup><col style="width: 50%;"> <col style="width: 50%;"></colgroup>
+
+<tbody>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+**Type**
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+<div>
+
+<div class="paragraph">
+
+Any
+
+</div>
+
+</div>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+**Attributes Type**
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+<div>
+
+<div class="paragraph">
+
+[Solace Message Properties](#SolaceMessageProperties)
+
+</div>
+
+</div>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="sect3">
+
+#### For Configurations.
+
+<div class="ulist">
+
+*   [Config](#config)
+
+</div>
+
+</div>
+
+</div>
+
+<div class="sect2">
+
+### Guaranteed Endpoint Polling Listener
+
+<div class="paragraph">
+
+`<solace:polling-queue-listener>`
+
+</div>
+
+<div class="sect3">
+
+#### Parameters
+
+In addition to all the parameters of [Gauranteed Endpoint Listener](#parameters), the following also applies:
+
+<table class="tableblock frame-all grid-all spread"><colgroup><col style="width: 20%;"> <col style="width: 20%;"> <col style="width: 35%;"> <col style="width: 20%;"> <col style="width: 5%;"></colgroup>
+
+<thead>
+
+<tr>
+
+<th class="tableblock halign-left valign-middle">Name</th>
+
+<th class="tableblock halign-left valign-middle">Type</th>
+
+<th class="tableblock halign-left valign-middle">Description</th>
+
+<th class="tableblock halign-left valign-middle">Default Value</th>
+
+<th class="tableblock halign-center valign-middle">Required</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+Fetch size
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+Number
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+The maximum number of messages (1-10) to fetch on each polling execution.
+
+</td>
+
+<td class="tableblock halign-left valign-middle">10</td>
+
+<td class="tableblock halign-center valign-middle">
+
+</td>
+
+</tr>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+Scheduling strategy
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+<div>
+
+<div class="paragraph">
+
+scheduling-strategy
+
+</div>
+
+</div>
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+Scheduling strategy for triggering the message fetch from the service. 
+
+It has two options:
+
+1. Fixed Frequency
+2. Cron
+
+</td>
+
+<td class="tableblock halign-left valign-middle">Fixed Frequency</td>
+
+<td class="tableblock halign-center valign-middle"></td>
+
+</tr>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+Frequency
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+<div>
+
+<div class="paragraph">
+
+Number
+
+</div>
+
+</div>
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+It is the polling frequency, when Scheduling Strategy is set to Fixed Frequency.
+
+</td>
+
+<td class="tableblock halign-left valign-middle">1000</td>
+
+<td class="tableblock halign-center valign-middle"></td>
+
+</tr>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+Start delay
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+<div>
+
+<div class="paragraph">
+
+Number
+
+</div>
+
+</div>
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+It is the amount of time for the scheduler to wait before starting, when Scheduling Strategy is set to Fixed Frequency.
+
+</td>
+
+<td class="tableblock halign-left valign-middle">0</td>
+
+<td class="tableblock halign-center valign-middle"></td>
+
+</tr>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+Time unit
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+<div>
+
+<div class="paragraph">
+
+Enumeration, one of:
+
+- DAYS
+- HOURS
+- MINUTES
+- SECONDS
+- MILLISECONDS
+
+</div>
+
+</div>
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+It is unit of time for Frequency and Start delay, when Scheduling Strategy is set to Fixed Frequency.
+
+</td>
+
+<td class="tableblock halign-left valign-middle">MILLISECONDS</td>
+
+<td class="tableblock halign-center valign-middle"></td>
+
+</tr>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+Expression
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+<div>
+
+<div class="paragraph">
+
+Cron expression
+
+</div>
+
+</div>
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+It is the cron expression to be defined, when Scheduling Strategy is set to Cron. More about this can be found in the Mule Docs here https://docs.mulesoft.com/mule-runtime/4.4/scheduler-concept#cron-expressions.
+
+</td>
+
+<td class="tableblock halign-left valign-middle"></td>
+
+<td class="tableblock halign-center valign-middle"> 
+
+**x** 
+
+</td>
+
+</tr>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+Time Zone
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+String
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+It is the ID of the time zone in which the expression is based, when Scheduling Strategy is set to Cron. For Cron configurations, Java timeZone values are supported. You should avoid the Java abbreviations, such as PST and AGT, and instead use the full-name Java equivalents, such as `America/Los_Angeles` and `America/Argentina/Buenos_Aires`.
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+System Default Timezone
+
 </td>
 
 <td class="tableblock halign-center valign-middle"></td>
@@ -6768,6 +7167,166 @@ Only applicable if destination name has been specified. Note: Queue type destina
 TOPIC
 
 </td>
+
+<td class="tableblock halign-left valign-middle"></td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="sect2">
+
+### Circuit Breaker Configuration Parameter
+
+<table class="tableblock frame-all grid-all spread"><colgroup><col style="width: 20%;"> <col style="width: 25%;"> <col style="width: 30%;"> <col style="width: 15%;"> <col style="width: 10%;"></colgroup>
+
+<thead>
+
+<tr>
+
+<th class="tableblock halign-left valign-middle">Field</th>
+
+<th class="tableblock halign-left valign-middle">Type</th>
+
+<th class="tableblock halign-left valign-middle">Description</th>
+
+<th class="tableblock halign-left valign-middle">Default Value</th>
+
+<th class="tableblock halign-left valign-middle">Required</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+On error types
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+<div>
+
+<div class="paragraph">
+
+String
+
+</div>
+
+</div>
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+Error types occurring during the flow execution, that result in failure of the circuit. By default, all errors are result in failure.
+
+</td>
+
+<td class="tableblock halign-left valign-middle"></td>
+
+<td class="tableblock halign-left valign-middle"></td>
+
+</tr>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+Errors threshold
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+Number
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+The total count of errors that must occur of the types (On error types) considered for circuit failure.
+
+</td>
+
+<td class="tableblock halign-left valign-middle"></td>
+
+<td class="tableblock halign-left valign-middle">
+
+**x**
+
+</td>
+
+</tr>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+Trip timeout
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+Number
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+The duration for which the circuit must remain open after the "Errors threshold" is reached.
+
+</td>
+
+<td class="tableblock halign-left valign-middle"></td>
+
+<td class="tableblock halign-left valign-middle">
+
+**x**
+
+</td>
+
+</tr>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+Trip timeout unit
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+Enumeration, one of:
+
+- NANOSECONDS
+- MICROSECONDS
+- MILLISECONDS 
+- SECONDS
+- MINUTES
+- HOURS
+- DAYS
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+The time unit for the trip timeout value.
+
+</td>
+
+<td class="tableblock halign-left valign-middle">MILLISECONDS</td>
 
 <td class="tableblock halign-left valign-middle"></td>
 

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:solace="http://www.mulesoft.org/schema/mule/solace" xmlns="http://www.mulesoft.org/schema/mule/core"
+			xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/solace http://www.mulesoft.org/schema/mule/solace/current/mule-solace.xsd">
+
+	<solace:config name="Solace_PubSub__Connector_Config_local" doc:name="Solace PubSub+ Connector Config" doc:id="442629c7-133b-44e9-983a-5f84f4a56979" >
+		<solace:connection msgVPN="default" brokerHost="tcp://localhost:55555" clientUserName="default" password="default" >
+		</solace:connection>
+	</solace:config>
+
+	<flow name="pollinglistenerfixedfrequency" doc:id="9a3cf20a-e508-4ac7-b325-fb6c75562488" >
+		<solace:polling-queue-listener address="test/q" doc:name="Guaranteed Endpoint Polling Listener" doc:id="9127306a-81b1-4e0d-a494-5fd5c9b943cd" config-ref="Solace_PubSub__Connector_Config_local" ackMode="MANUAL_CLIENT" fetchSize="5">
+			<scheduling-strategy >
+				<fixed-frequency frequency="30" startDelay="1" timeUnit="SECONDS"/>
+			</scheduling-strategy>
+		</solace:polling-queue-listener>
+		<logger level="INFO" doc:name="Logger" doc:id="6a2569a5-275e-4c07-8526-f4867116ffbe" message="Received Message: #[payload]"/>
+		<solace:ack doc:name="Ack" doc:id="921f91bc-f5e3-4724-96f1-3fbf500588e6" config-ref="Solace_PubSub__Connector_Config_local" messageRefId="#[attributes.messageReferenceId]"/>
+	</flow>
+
+	<flow name="pollinglistenercronexpression" doc:id="8323d70a-d4e0-43e0-a3f7-500c5d794522" >
+		<solace:polling-queue-listener address="test/q" doc:name="Guaranteed Endpoint Polling Listener" doc:id="74b96196-008c-4d95-acb7-60fd418f2df2" config-ref="Solace_PubSub__Connector_Config_local" ackMode="MANUAL_CLIENT" fetchSize="5">
+			<scheduling-strategy >
+				<cron expression="1/30 * * * * ?" timeZone="America/Los_Angeles" />
+			</scheduling-strategy>
+		</solace:polling-queue-listener>
+		<logger level="INFO" doc:name="Logger" doc:id="7c84562c-502b-4e4a-a269-bde14d6c6f97" message="Received Message: #[payload]"/>
+		<solace:ack doc:name="Ack" doc:id="6a7e2435-64a4-4257-a726-f8d79ec9257f" config-ref="Solace_PubSub__Connector_Config_local" messageRefId="#[attributes.messageReferenceId]"/>
+	</flow>
+
+	<flow name="pollinglistenercircuitbreaker" doc:id="8323d70a-d4e0-43e0-a3f7-500c5d794522" maxConcurrency="1">
+		<solace:polling-queue-listener address="test/q" doc:name="Guaranteed Endpoint Polling Listener" doc:id="74b96196-008c-4d95-acb7-60fd418f2df2" config-ref="Solace_PubSub__Connector_Config_local" ackMode="MANUAL_CLIENT" fetchSize="5">
+			<scheduling-strategy >
+				<fixed-frequency frequency="30" startDelay="1" timeUnit="SECONDS"/>
+			</scheduling-strategy>
+			<solace:circuit-breaker onErrorTypes="DUMMY_HTTP:CONNECTIVITY" errorsThreshold="3" tripTimeout="60" tripTimeoutUnit="SECONDS" />
+		</solace:polling-queue-listener>
+		<logger level="INFO" doc:name="Logger" doc:id="b81aae97-4723-42c9-8564-a135ffb3e7ae" message="Received Message: #[payload]"/>
+		<raise-error doc:name="Raise error" doc:id="789faea3-3c3c-495b-b4fb-5a012d9cb7f0" type="DUMMY_HTTP:CONNECTIVITY"/>
+		<solace:ack doc:name="Ack" doc:id="6a7e2435-64a4-4257-a726-f8d79ec9257f" config-ref="Solace_PubSub__Connector_Config_local" messageRefId="#[attributes.messageReferenceId]"/>
+	</flow>
+
+</mule>
