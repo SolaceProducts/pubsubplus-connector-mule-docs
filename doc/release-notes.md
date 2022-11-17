@@ -29,7 +29,7 @@ Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and
 
 **Operations**
 
-* Support payload types of CursorStreamProvider and OutputHandler for Publish Operation.
+* Support payload types of CursorStreamProvider and OutputHandler for Publish Operation. (SOL-61581)
 * Added support for message consumption published with Content-Type as "text". (SOL-74548)
 
 ## v1.1.0

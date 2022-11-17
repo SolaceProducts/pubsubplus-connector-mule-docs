@@ -23,6 +23,9 @@ Contents:
     + [Event Portal Configuration](#event-portal-configuration)
         * [Event Portal API Token](#event-portal-api-token)
         * [Event Portal Console Organization Prefix](#event-portal-console-organization-prefix)
+    + [Circuit Breaker Configuration](#circuit-breaker-configuration)
+        * [Global Circuit Breaker](#global-circuit-breaker)
+        * [Private Circuit Breaker](#private-circuit-breaker)
   * [Accelerate Application Development Using the Event Catalog](#accelerate-application-development-using-the-event-catalog)
   * [Common Parameters](#common-parameters)
       - [Event Portal integration related Parameters](#event-portal-integration-related-parameters)
@@ -79,11 +82,11 @@ Contents:
       - [Optional Parameters](#optional-parameters-4)
       - [Example](#example-5)
     + [Guaranteed Endpoint Polling Listener source](#guaranteed-endpoint-polling-listener-source)
-      - [Required Parameters](#required-parameters-5)
-        * [Connector Configuration](#connector-configuration-5)
+      - [Required Parameters](#required-parameters-6)
+        * [Connector Configuration](#connector-configuration-6)
         * [Endpoint](#endpoint-1)
       - [Optional Parameters](#optional-parameters-4)
-      - [Example](#example-5)
+      - [Example](#example-6)
 
 </br>
 
@@ -285,7 +288,7 @@ Although this is not a secret setting, if your org prefix is different than the 
 
 This provides the source listeners like Guaranteed Endpoint Listener and Guaranteed Endpoint Polling Listener with the circuit breaking capability, which enables you to control how the connector handles errors that occur while processing a consumed message. By default this feature is disabled.
 
-If a flow is using an external service which becomes unavailable(or unable to process the messages), at a given point in time, every attempt to process a message would result in failure. To prevent such continuous failure of messages, you can notify the listener to stop consuming more messages for a defined period of time.
+If a flow is using an external service which becomes unavailable(or unable to process the messages resulting in an error), at a given point in time, every attempt to process a message would result in failure. To prevent such continuous failure of message processing, you can notify the listener to stop consuming more messages for a defined period of time.
 
 The circuit breaker configuration can be either Global or Private, however the parameters remain the same.
 

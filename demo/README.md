@@ -9,6 +9,10 @@ It contains the following flows:
 * [`manualack`](#manualack---manual-acknowledgement): Manual Message Acknowledgement
 * [`jsonmessage`](#jsonmessage---complex-message-json): Complex message - JSON payload
 * [`listenerrecoversession`](#recoversession---recover-session): Recover Session
+* [`pollinglistenerfixedfrequency`](#pollinglistenerfixedfrequency---polling-listener-fixed-frequency): Polling Listener - Fixed Frequency
+* [`pollinglistenercronexpression`](#pollinglistenercronexpression---polling-listener-cron-expression): Polling Listener - Cron Expression
+* [`pollinglistenercircuitbreaker`](#pollinglistenercircuitbreaker---polling-listener-fixed-frequency-with-circuit-breaker): Polling Listener - Fixed Frequency Circuit Breaker
+* [`listenercircuitbreaker`](#listenercircuitbreaker---guaranteed-endpoint-listener-with-circuit-breaker): Guaranteed Endpoint Listener - Circuit Breaker
 
 ## How to import & run the examples
 
@@ -165,6 +169,8 @@ This example uses simple text payloads.
 
 Test set-up:
 
+For the flow name `pollinglistenerfixedfrequency` set initialState="started" in the `pollinglistener.xml`.
+
 Ensure a queue is provisioned with name as "test/q". Publish some messages to this queue. In the test example, 8 messages are published with sequence information in the payload as "Test msg 1" to "Test msg 8".
 Since the schedule is Fixed Frequency type with frequency as 30 seconds and initial start delay of 1 second. Expectation would be to see maximum of 5 messages consumed at every schedule.
 
@@ -190,6 +196,8 @@ Demonstrates Guaranteed Endpoint Polling Listener with Cron Expression (Ack Mode
 This example uses simple text payloads.
 
 Test set-up:
+
+For the flow name `pollinglistenercronexpression` set initialState="started" in the `pollinglistener.xml`.
 
 Ensure a queue is provisioned with name as "test/q". Publish some messages to this queue. In the test example, 8 messages are published with sequence information in the payload as "Test msg 1" to "Test msg 8".
 Since the schedule is Cron Expression, it is scheduled to run every 30 seconds of the day, every day and the Timezone is `America/Los_Angeles`. Expectation would be to see maximum of 5 messages consumed at every schedule.
@@ -219,13 +227,15 @@ This example uses simple text payloads.
 
 Test set-up:
 
+For the flow name `pollinglistenercircuitbreaker` set initialState="started" in the `pollinglistener.xml`.
+
 Ensure a queue is provisioned with name as "test/q". Publish some messages to this queue. In the test example, more than 3 messages are published with sequence information in the payload starting with "Test msg 1".
 The schedule is "Fixed Frequency" type with frequency as 30 seconds and initial start delay of 1 second. The inline circuit breaker is configured with a custom error type `DUMMY_HTTP:CONNECTIVITY` and errorThreshold is set to 3. With a tripTimeout of 60 seconds, we should see that once the circuit is moved to OPEN state, the half-test should be performed only after 60 seconds of tripping.
-Also we should observe that the test is done with only 1 message and if it fails the circuit is still open. We might not be able to test the circuit state "Closed" after it is "Open", because of recovery of the failing service has to be dynamic, which is not possible with this test flow.
+Also, we should observe that the half-open test is performed with only 1 message and if it fails the circuit continues to be in "Open" state. We might not be able to test the circuit state "Closed" after it is "Open", because of recovery of the failing service has to be dynamic, which is not possible with this test flow.
 
 **How to verify it's working?**
 
-If we observer the below logs, after the third message fails with `DUMMY_HTTP:CONNECTIVITY` the circuit is moved to OPEN state. `Circuit tripping detected at failureCount=3` logged at 16:44:18 and the half-open test is performed at 16:45:48 which is after 60 seconds provided the next polling is scheduled. This half-test continues at the same internal until the test passes:
+If we observe the below logs, after the third message fails with `DUMMY_HTTP:CONNECTIVITY` the circuit is moved to OPEN state. `Circuit tripping detected at failureCount=3` logged at 16:44:18 and the half-open test is performed at 16:45:48 which is after 60 seconds and only on the next scheduled poll. This half-test continues at the same interval until the test passes:
 
 ```
 INFO  2022-11-16 16:44:18,452 [[MuleRuntime].uber.12: [solpubsub1dot2].pollinglistenercircuitbreaker.CPU_LITE @645c1d89] [processor: pollinglistenercircuitbreaker/processors/0; event: d29ff820-65f7-11ed-85fb-66bc5810864b] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: Received Message: Test msg 1
@@ -293,4 +303,97 @@ FlowStack             : at pollinglistenercircuitbreaker(pollinglistenercircuitb
 ********************************************************************************
 
 INFO  2022-11-16 16:47:18,322 [[MuleRuntime].uber.12: [solpubsub1dot2].pollinglistenercircuitbreaker.CPU_LITE @645c1d89] [processor: pollinglistenercircuitbreaker/processors/1; event: 3de73210-65f8-11ed-85fb-66bc5810864b] com.solace.connector.mulesoft.api.circuit.DefaultCircuitBreaker: Circuit tripping detected at failureCount=5
+```
+
+## listenercircuitbreaker - Guaranteed Endpoint Listener with Circuit Breaker
+
+Demonstrates Guaranteed Endpoint Listener with Circuit Breaker configured (Ack Mode is set to MANUAL_CLIENT).
+
+>Note: MaxConcurrency is set to 1, as we want to perform a deterministic testing.
+
+This example uses simple text payloads.
+
+Test set-up:
+
+For the flow name `listenercircuitbreaker` set initialState="started" in the `simplesenderlisteners.xml`.
+
+Ensure a queue is provisioned with name as "test/q". Publish some messages to this queue. In the test example, more than 3 messages are published with sequence information in the payload starting with "Test msg 1". The inline circuit breaker is configured with a custom error type `DUMMY_HTTP:CONNECTIVITY` and errorThreshold is set to 3. With a tripTimeout of 60 seconds, we should see that once the circuit is moved to OPEN state, the half-test should be performed only after 60 seconds of tripping.
+Also, we should observe that the half-open test is performed with only 1 message and if it fails the circuit continues to be in "Open" state. We might not be able to test the circuit state "Closed" after it is "Open", because of recovery of the failing service has to be dynamic, which is not possible with this test flow.
+
+**How to verify it's working?**
+
+If we observe the below logs, after the third message fails with `DUMMY_HTTP:CONNECTIVITY` the circuit is moved to OPEN state. `Circuit tripping detected at failureCount=3` logged at 00:23:59 and the half-open test is performed at 00:24:59 which is after 60 seconds. This half-test continues at the same interval until the test passes:
+
+```
+INFO  2022-11-17 00:23:59,223 [[MuleRuntime].uber.12: [solpubsub1dot2].listenercircuitbreaker.CPU_LITE @75bf3577] [processor: listenercircuitbreaker/processors/0; event: 0a13e0b1-6638-11ed-bb31-66bc5810864b] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: Received Message: Test msg 1
+ERROR 2022-11-17 00:23:59,239 [[MuleRuntime].uber.12: [solpubsub1dot2].listenercircuitbreaker.CPU_LITE @75bf3577] [processor: listenercircuitbreaker/processors/1; event: 0a13e0b1-6638-11ed-bb31-66bc5810864b] org.mule.runtime.core.internal.exception.OnErrorPropagateHandler: 
+********************************************************************************
+Message               : An error occurred.
+Element               : listenercircuitbreaker/processors/1 @ solpubsub1dot2:pollinglistener.xml:18 (Raise error)
+Element DSL           : <raise-error doc:name="Raise error" doc:id="789faea3-3c3c-495b-b4fb-5a012d9cb7f0" type="DUMMY_HTTP:CONNECTIVITY"></raise-error>
+Error type            : DUMMY_HTTP:CONNECTIVITY
+FlowStack             : at listenercircuitbreaker(listenercircuitbreaker/processors/1 @ solpubsub1dot2:pollinglistener.xml:18 (Raise error))
+
+  (set debug level logging or '-Dmule.verbose.exceptions=true' for everything)
+********************************************************************************
+
+INFO  2022-11-17 00:23:59,260 [[MuleRuntime].uber.12: [solpubsub1dot2].listenercircuitbreaker.CPU_LITE @75bf3577] [processor: listenercircuitbreaker/processors/0; event: 0a162aa0-6638-11ed-bb31-66bc5810864b] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: Received Message: Test msg 2
+ERROR 2022-11-17 00:23:59,261 [[MuleRuntime].uber.12: [solpubsub1dot2].listenercircuitbreaker.CPU_LITE @75bf3577] [processor: listenercircuitbreaker/processors/1; event: 0a162aa0-6638-11ed-bb31-66bc5810864b] org.mule.runtime.core.internal.exception.OnErrorPropagateHandler: 
+********************************************************************************
+Message               : An error occurred.
+Element               : listenercircuitbreaker/processors/1 @ solpubsub1dot2:pollinglistener.xml:18 (Raise error)
+Element DSL           : <raise-error doc:name="Raise error" doc:id="789faea3-3c3c-495b-b4fb-5a012d9cb7f0" type="DUMMY_HTTP:CONNECTIVITY"></raise-error>
+Error type            : DUMMY_HTTP:CONNECTIVITY
+FlowStack             : at listenercircuitbreaker(listenercircuitbreaker/processors/1 @ solpubsub1dot2:pollinglistener.xml:18 (Raise error))
+
+  (set debug level logging or '-Dmule.verbose.exceptions=true' for everything)
+********************************************************************************
+
+INFO  2022-11-17 00:23:59,264 [[MuleRuntime].uber.12: [solpubsub1dot2].listenercircuitbreaker.CPU_LITE @75bf3577] [processor: listenercircuitbreaker/processors/0; event: 0a203cc0-6638-11ed-bb31-66bc5810864b] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: Received Message: Test msg 3
+ERROR 2022-11-17 00:23:59,265 [[MuleRuntime].uber.12: [solpubsub1dot2].listenercircuitbreaker.CPU_LITE @75bf3577] [processor: listenercircuitbreaker/processors/1; event: 0a203cc0-6638-11ed-bb31-66bc5810864b] org.mule.runtime.core.internal.exception.OnErrorPropagateHandler: 
+********************************************************************************
+Message               : An error occurred.
+Element               : listenercircuitbreaker/processors/1 @ solpubsub1dot2:pollinglistener.xml:18 (Raise error)
+Element DSL           : <raise-error doc:name="Raise error" doc:id="789faea3-3c3c-495b-b4fb-5a012d9cb7f0" type="DUMMY_HTTP:CONNECTIVITY"></raise-error>
+Error type            : DUMMY_HTTP:CONNECTIVITY
+FlowStack             : at listenercircuitbreaker(listenercircuitbreaker/processors/1 @ solpubsub1dot2:pollinglistener.xml:18 (Raise error))
+
+  (set debug level logging or '-Dmule.verbose.exceptions=true' for everything)
+********************************************************************************
+
+INFO  2022-11-17 00:23:59,266 [[MuleRuntime].uber.12: [solpubsub1dot2].listenercircuitbreaker.CPU_LITE @75bf3577] [processor: listenercircuitbreaker/processors/1; event: 0a203cc0-6638-11ed-bb31-66bc5810864b] com.solace.connector.mulesoft.api.circuit.DefaultCircuitBreaker: Circuit tripping detected at failureCount=3
+INFO  2022-11-17 00:23:59,266 [[MuleRuntime].uber.12: [solpubsub1dot2].listenercircuitbreaker.CPU_LITE @75bf3577] [processor: listenercircuitbreaker/processors/1; event: 0a203cc0-6638-11ed-bb31-66bc5810864b] com.solace.connector.mulesoft.api.circuit.DefaultCircuitBreaker: Circuit '_Solace_GEL_listenercircuitbreaker' tripped, moving to OPEN
+INFO  2022-11-17 00:23:59,270 [Context_3_ConsumerDispatcher] [processor: ; event: ] com.solace.connector.mulesoft.internal.jcsmp.CbAwareMessageListener: Circuit OPEN. Waiting for the trip timeout
+INFO  2022-11-17 00:24:59,268 [Context_3_ConsumerDispatcher] [processor: ; event: ] com.solace.connector.mulesoft.internal.jcsmp.CbAwareMessageListener: Circuit OPEN. Waiting completed for the trip timeout
+INFO  2022-11-17 00:24:59,269 [[MuleRuntime].uber.12: [solpubsub1dot2].listenercircuitbreaker.CPU_LITE @75bf3577] [processor: listenercircuitbreaker/processors/0; event: 2de72c40-6638-11ed-bb31-66bc5810864b] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: Received Message: Test msg 1
+ERROR 2022-11-17 00:24:59,269 [[MuleRuntime].uber.12: [solpubsub1dot2].listenercircuitbreaker.CPU_LITE @75bf3577] [processor: listenercircuitbreaker/processors/1; event: 2de72c40-6638-11ed-bb31-66bc5810864b] org.mule.runtime.core.internal.exception.OnErrorPropagateHandler: 
+********************************************************************************
+Message               : An error occurred.
+Element               : listenercircuitbreaker/processors/1 @ solpubsub1dot2:pollinglistener.xml:18 (Raise error)
+Element DSL           : <raise-error doc:name="Raise error" doc:id="789faea3-3c3c-495b-b4fb-5a012d9cb7f0" type="DUMMY_HTTP:CONNECTIVITY"></raise-error>
+Error type            : DUMMY_HTTP:CONNECTIVITY
+FlowStack             : at listenercircuitbreaker(listenercircuitbreaker/processors/1 @ solpubsub1dot2:pollinglistener.xml:18 (Raise error))
+
+  (set debug level logging or '-Dmule.verbose.exceptions=true' for everything)
+********************************************************************************
+
+INFO  2022-11-17 00:24:59,269 [[MuleRuntime].uber.12: [solpubsub1dot2].listenercircuitbreaker.CPU_LITE @75bf3577] [processor: listenercircuitbreaker/processors/1; event: 2de72c40-6638-11ed-bb31-66bc5810864b] com.solace.connector.mulesoft.api.circuit.DefaultCircuitBreaker: Circuit tripping detected at failureCount=4
+INFO  2022-11-17 00:24:59,269 [[MuleRuntime].uber.12: [solpubsub1dot2].listenercircuitbreaker.CPU_LITE @75bf3577] [processor: listenercircuitbreaker/processors/1; event: 2de72c40-6638-11ed-bb31-66bc5810864b] com.solace.connector.mulesoft.api.circuit.DefaultCircuitBreaker: Circuit '_Solace_GEL_listenercircuitbreaker' tripped, moving to OPEN
+INFO  2022-11-17 00:24:59,269 [Context_3_ConsumerDispatcher] [processor: ; event: ] com.solace.connector.mulesoft.internal.jcsmp.CbAwareMessageListener: Circuit OPEN. Waiting for the trip timeout
+INFO  2022-11-17 00:25:59,284 [Context_3_ConsumerDispatcher] [processor: ; event: ] com.solace.connector.mulesoft.internal.jcsmp.CbAwareMessageListener: Circuit OPEN. Waiting completed for the trip timeout
+INFO  2022-11-17 00:25:59,284 [[MuleRuntime].uber.12: [solpubsub1dot2].listenercircuitbreaker.CPU_LITE @75bf3577] [processor: listenercircuitbreaker/processors/0; event: 51ace340-6638-11ed-bb31-66bc5810864b] org.mule.runtime.core.internal.processor.LoggerMessageProcessor: Received Message: Test msg 2
+ERROR 2022-11-17 00:25:59,284 [[MuleRuntime].uber.12: [solpubsub1dot2].listenercircuitbreaker.CPU_LITE @75bf3577] [processor: listenercircuitbreaker/processors/1; event: 51ace340-6638-11ed-bb31-66bc5810864b] org.mule.runtime.core.internal.exception.OnErrorPropagateHandler: 
+********************************************************************************
+Message               : An error occurred.
+Element               : listenercircuitbreaker/processors/1 @ solpubsub1dot2:pollinglistener.xml:18 (Raise error)
+Element DSL           : <raise-error doc:name="Raise error" doc:id="789faea3-3c3c-495b-b4fb-5a012d9cb7f0" type="DUMMY_HTTP:CONNECTIVITY"></raise-error>
+Error type            : DUMMY_HTTP:CONNECTIVITY
+FlowStack             : at listenercircuitbreaker(listenercircuitbreaker/processors/1 @ solpubsub1dot2:pollinglistener.xml:18 (Raise error))
+
+  (set debug level logging or '-Dmule.verbose.exceptions=true' for everything)
+********************************************************************************
+
+INFO  2022-11-17 00:25:59,284 [[MuleRuntime].uber.12: [solpubsub1dot2].listenercircuitbreaker.CPU_LITE @75bf3577] [processor: listenercircuitbreaker/processors/1; event: 51ace340-6638-11ed-bb31-66bc5810864b] com.solace.connector.mulesoft.api.circuit.DefaultCircuitBreaker: Circuit tripping detected at failureCount=5
+INFO  2022-11-17 00:25:59,284 [[MuleRuntime].uber.12: [solpubsub1dot2].listenercircuitbreaker.CPU_LITE @75bf3577] [processor: listenercircuitbreaker/processors/1; event: 51ace340-6638-11ed-bb31-66bc5810864b] com.solace.connector.mulesoft.api.circuit.DefaultCircuitBreaker: Circuit '_Solace_GEL_listenercircuitbreaker' tripped, moving to OPEN
+INFO  2022-11-17 00:25:59,284 [Context_3_ConsumerDispatcher] [processor: ; event: ] com.solace.connector.mulesoft.internal.jcsmp.CbAwareMessageListener: Circuit OPEN. Waiting for the trip timeout
 ```

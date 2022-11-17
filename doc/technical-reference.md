@@ -15,25 +15,27 @@
     * [Request Reply](#request-reply)
     * [Recover Session](#recover-session)
 *   [Sources](#sources)
-    *   [Guaranteed Endpoint Listener](#guaranteed-endpoint-listener)
-    *   [Direct Topic Subscriber](#direct-topic-subscriber)
+    * [Guaranteed Endpoint Listener](#guaranteed-endpoint-listener)
+    * [Guaranteed Endpoint Polling Listener](#guaranteed-endpoint-polling-listener)
+    * [Direct Topic Subscriber](#direct-topic-subscriber)
 *   [Types](#types)
-    *   [Ack Cache Time Out Parameter](#ack-cache-time-out-parameter)
-    *   [Tls](#tls)
-    *   [Trust Store](#trust-store)
-    *   [Key Store](#key-store)
-    *   [Standard Revocation Check](#standard-revocation-check)
-    *   [Custom Ocsp Responder](#custom-ocsp-responder)
-    *   [Crl File](#crl-file)
-    *   [Reconnection](#reconnection)
-    *   [Reconnect](#reconnect)
-    *   [Reconnect Forever](#reconnect-forever)
-    *   [Event Portal Config Parameter](#event-portal-config-parameter)
-    *   [Expiration Policy](#expiration-policy)
-    *   [Solace Message Properties](#solace-message-properties)
-    *   [Redelivery Policy](#redelivery-policy)
-    *   [Outbound Additional Message Properties](#outbound-additional-message-properties)
-    *   [Reply To Destination Parameter](#reply-to-destination-parameter)
+    * [Ack Cache Time Out Parameter](#ack-cache-time-out-parameter)
+    * [Tls](#tls)
+    * [Trust Store](#trust-store)
+    * [Key Store](#key-store)
+    * [Standard Revocation Check](#standard-revocation-check)
+    * [Custom Ocsp Responder](#custom-ocsp-responder)
+    * [Crl File](#crl-file)
+    * [Reconnection](#reconnection)
+    * [Reconnect](#reconnect)
+    * [Reconnect Forever](#reconnect-forever)
+    * [Event Portal Config Parameter](#event-portal-config-parameter)
+    * [Expiration Policy](#expiration-policy)
+    * [Solace Message Properties](#solace-message-properties)
+    * [Redelivery Policy](#redelivery-policy)
+    * [Outbound Additional Message Properties](#outbound-additional-message-properties)
+    * [Reply To Destination Parameter](#reply-to-destination-parameter)
+    * [Circuit Breaker Configuration Parameter](#circuit-breaker-configuration-parameter)
 
 </div>
 
@@ -4019,7 +4021,7 @@ Any
 
 #### Parameters
 
-In addition to all the parameters of [Gauranteed Endpoint Listener](#parameters), the following also applies:
+All the parameters of [Gauranteed Endpoint Listener](#guaranteed-endpoint-listener) along with the below:
 
 <table class="tableblock frame-all grid-all spread"><colgroup><col style="width: 20%;"> <col style="width: 20%;"> <col style="width: 35%;"> <col style="width: 20%;"> <col style="width: 5%;"></colgroup>
 
@@ -7228,7 +7230,7 @@ String
 
 <td class="tableblock halign-left valign-middle">
 
-Error types occurring during the flow execution, that result in failure of the circuit. By default, all errors are result in failure.
+Error types occurring during the flow execution, that result in failure of the circuit. By default, all errors result in failure.
 
 </td>
 
