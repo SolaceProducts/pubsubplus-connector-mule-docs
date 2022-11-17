@@ -26,11 +26,11 @@ Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and
 
 * Added a new source type "Guaranteed Endpoint Polling Listener" which retrieves fixed number of messages at the scheduled polling interval and dispatches to the flow individually.
 * Added support for Error Handling using the Circuit Breaker pattern for the "Guaranteed Endpoint Polling Listener" and "Guaranteed Endpoint Listener".
-* Added support for message consumption published with Content-Type as "text". (SOL-74548)
 
 **Operations**
 
 * Support payload types of CursorStreamProvider and OutputHandler for Publish Operation.
+* Added support for message consumption published with Content-Type as "text". (SOL-74548)
 
 ## v1.1.0
 **August 1, 2022**
