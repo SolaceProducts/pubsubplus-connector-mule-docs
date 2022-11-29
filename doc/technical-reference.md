@@ -663,6 +663,14 @@ Reconnection
 
 [Reconnection](#Reconnection)
 
+In order to use this Reconnection Strategy by the Mule Runtime, you need to disable the default Connection/Reconnection retries of JCSMP client.
+
+Set the following properties to 0 from the [JCSMP properties](user-guide.md#jcsmp-properties).
+
+`CLIENT_CHANNEL_PROPERTIES.connectRetries = 0`
+
+`CLIENT_CHANNEL_PROPERTIES.ReconnectRetries = 0`
+
 </div>
 
 </div>
