@@ -15,7 +15,7 @@ Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and
 
 ### Fixed Issues
 
-* Fixed the unbinding of connector on every message received when Ack Mode is set to AUTOMATIC_ON_FLOW_COMPLETION. (SOL-79397)
+* Fixed the unbinding of connector on every message received when Ack Mode is set to AUTOMATIC_ON_FLOW_COMPLETION or AUTOMATIC_IMMEDIATE. (SOL-79397)
 * Multiple start/stop of Guaranteed Endpoint Listener sourced flows is now fixed. (SOL-73393)
 * Reconnection strategy is now fixed. (SOL-65619)
 * Upgraded library dependency `com.solacesystems:sol-jcsmp` to 10.16.0.
