@@ -662,9 +662,20 @@ For more details refer to the [Request Reply](../demo/README.md#requestreply---r
 
 ### Recover Session Operation
 
-Allows the user to perform a session recover while consuming an unacknowledged message. It can be used for both "Consume Operation" and "Guaranteed Endpoint Listener" with AckMode being MANUAL_CLIENT.
+Allows the user to perform a session recover while consuming an unacknowledged message. It can be used for "Consume Operation",  "Guaranteed Endpoint Listener" and "Guaranteed Endpoint Polling Listener" with AckMode being MANUAL_CLIENT.
 
 Performing a session recover redelivers all the consumed messages that had not being acknowledged before this recover.
+
+#### Scope
+
+In certain Ack Modes we may not be able to use the Recover Session due to various factors, however we have an Auto Recover Session functionality built into the connector and so this tables helps us identify how the Recover Session works in various Ack modes.
+
+| Ack Mode                     | Can Recover Session be used? | Will Automatic recovery of the session happen? | Comments                                                                                                                                                                                                                                                                                         |
+|------------------------------|------------------------------|------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| AUTOMATIC_IMMEDIATE          | No                           | No                                             | The message is ack'd before the flow execution starts, independent of the flow execution status and hence recovery does not hold any significance here.                                                                                                                                          |                                      
+| AUTOMATIC_ON_FLOW_COMPLETION | No                           | Yes                                            | Because the message is ack'd at the end of the flow completion where the context is held by the Mule Runtime, hence a Custom Recover Session is not possible. So we rely on the Mule Callback for the execution status and hence apply a auto-session recover when the flow results in an error. |                                       
+| MANUAL_CLIENT                | Yes                          | Yes                                            | If no Recover Session is configured, then Auto Recover Session is applied by default, when the flow results in an error.                                                                                                                                                                         |
+
 
 #### Required Parameters
 

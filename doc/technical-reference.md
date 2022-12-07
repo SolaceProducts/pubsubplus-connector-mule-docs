@@ -3193,6 +3193,8 @@ Any
 
 Operation that allows  the user to perform a session recover when consuming an unacknowledged message. It applies only when Ack Mode is selected to MANUAL_CLIENT.
 
+More about the usage and scope can found [here](user-guide.md#recover-session-operation).
+
 </div>
 
 <div class="sect3">
