@@ -3,21 +3,22 @@
 Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and PubSub+ Event Portal (event management) within MuleSoft Anypoint Platform, to make your MuleSoft integrations more reliable, agile, and event-driven.  
 
 ## v1.2.0
-**December 1, 2022**
+**January 12, 2023**
 ### Compatibility
 
-| Application/Service | Version |
-|---|---|
-| Mule Runtime | 4.3 and higher |
-| Studio Version | 7.9 and higher |
+| Application/Service  | Version        |
+|----------------------|----------------|
+| Mule Runtime         | 4.3 and higher |
+| Studio Version       | 7.9 and higher |
 | PubSub+ Event Broker | 9.1 and higher |
-| Java | 1.8 and later |
+| Java                 | 1.8 and later  |
 
 ### Fixed Issues
 
 * Fixed the unbinding of connector on every message received when Ack Mode is set to AUTOMATIC_ON_FLOW_COMPLETION or AUTOMATIC_IMMEDIATE. (SOL-79397)
 * Multiple start/stop of Guaranteed Endpoint Listener sourced flows is now fixed. (SOL-73393)
 * Reconnection strategy is now fixed. (SOL-65619)
+* Destination Name in Publish and Request Reply Operation is now fixed. Requires the attribute name `destination-type` to be updated to `destinationType` in the Mule Project XML file for Publish and Request Reply Operations. (SOL-84858)
 * Upgraded library dependency `com.solacesystems:sol-jcsmp` to 10.16.0.
 
 ### New Features

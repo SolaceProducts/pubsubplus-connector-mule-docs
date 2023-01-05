@@ -25,7 +25,7 @@ http://www.mulesoft.org/schema/mule/solace http://www.mulesoft.org/schema/mule/s
 				<fixed-frequency frequency="5" timeUnit="SECONDS"/>
 			</scheduling-strategy>
 		</scheduler>
-		<solace:publish doc:name="Publish" doc:id="1610a756-7353-4681-8674-6a5a1ea1fd08" config-ref="Solace_PubSub__Connector_Config" delivery-mode="PERSISTENT" destination-type="QUEUE" address="q/consumeexample" provisionEndpoint="true">
+		<solace:publish doc:name="Publish" doc:id="1610a756-7353-4681-8674-6a5a1ea1fd08" config-ref="Solace_PubSub__Connector_Config" delivery-mode="PERSISTENT" destinationType="QUEUE" address="q/consumeexample" provisionEndpoint="true">
 			<solace:message >
 				<solace:body ><![CDATA[Hello Consume]]></solace:body>
 			</solace:message>

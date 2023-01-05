@@ -5871,13 +5871,17 @@ The path to the CRL file.
 
 ### Reconnection
 
-In order to use this Reconnection Strategy by the Mule Runtime, you need to disable the default Connection/Reconnection retries of JCSMP client.
+The Reconnection capability available at the JCSMP client level is disabled by default. 
 
-Set the following properties to 0 from the [JCSMP properties](user-guide.md#jcsmp-properties) to disable the default JCSMP retries.
+**Note:** <em> When using the JCSMP client reconnection config, you will have to disable Reconnection Strategy config of the Mule Runtime(if configured). </em>
 
-`CLIENT_CHANNEL_PROPERTIES.connectRetries = 0`
+Set the following properties to the number of times you would prefer the retries to be performed [JCSMP properties](user-guide.md#jcsmp-properties).
 
-`CLIENT_CHANNEL_PROPERTIES.ReconnectRetries = 0`
+`CLIENT_CHANNEL_PROPERTIES.connectRetries`
+
+`CLIENT_CHANNEL_PROPERTIES.ReconnectRetries`
+ 
+Mule Runtime Reconnect Strategy has the following configurations:
 
 <table class="tableblock frame-all grid-all spread"><colgroup><col style="width: 20%;"> <col style="width: 25%;"> <col style="width: 30%;"> <col style="width: 15%;"> <col style="width: 10%;"></colgroup>
 

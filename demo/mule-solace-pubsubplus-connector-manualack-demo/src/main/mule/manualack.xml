@@ -23,7 +23,7 @@ http://www.mulesoft.org/schema/mule/solace http://www.mulesoft.org/schema/mule/s
 				<fixed-frequency frequency="10" timeUnit="SECONDS" startDelay="1"/>
 			</scheduling-strategy>
 		</scheduler>
-		<solace:publish doc:name="Publish guaranteed" doc:id="f810f938-caa4-4bf9-9487-5bddd2d3a879" config-ref="Solace_PubSub__Connector_Config" address="q/manualack" delivery-mode="PERSISTENT" destination-type="QUEUE">
+		<solace:publish doc:name="Publish guaranteed" doc:id="f810f938-caa4-4bf9-9487-5bddd2d3a879" config-ref="Solace_PubSub__Connector_Config" address="q/manualack" delivery-mode="PERSISTENT" destinationType="QUEUE">
 			<solace:message >
 				<solace:body ><![CDATA[A guaranteed message]]></solace:body>
 			</solace:message>
