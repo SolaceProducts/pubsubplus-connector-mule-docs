@@ -3,15 +3,15 @@
 Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and PubSub+ Event Portal (event management) within MuleSoft Anypoint Platform, to make your MuleSoft integrations more reliable, agile, and event-driven.  
 
 ## v1.2.0
-**January 12, 2023**
+**January 20, 2023**
 ### Compatibility
 
-| Application/Service  | Version        |
-|----------------------|----------------|
-| Mule Runtime         | 4.3 and higher |
-| Studio Version       | 7.9 and higher |
-| PubSub+ Event Broker | 9.1 and higher |
-| Java                 | 1.8 and later  |
+| Application/Service  | Version                                     |
+|----------------------|---------------------------------------------|
+| Mule Runtime         | 4.3 with `mule-maven-plugin` version 3.5.4  |
+| Studio Version       | 7.9 and higher                              |
+| PubSub+ Event Broker | 9.1 and higher                              |
+| Java                 | 1.8 and later                               |
 
 ### Fixed Issues
 
@@ -32,6 +32,10 @@ Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and
 
 * Support payload types of CursorStreamProvider and OutputHandler for Publish Operation. (SOL-61581)
 * Added support for message consumption published with Content-Type as "text". (SOL-74548)
+
+### Known Issues
+
+* There is an existing issue when running Mule Runtime 4.4 or 4.3 with `mule-maven-plugin` version post the 3.5.4, resulting in an error message reading `Cannot resolve the name 'mule:global-abstract-scheduling-strategy' to a(n) 'element declaration' component.`. This has been reported to Mulesoft.
 
 ## v1.1.0
 **August 1, 2022**
