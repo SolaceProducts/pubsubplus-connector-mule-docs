@@ -35,7 +35,7 @@ Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and
 
 ### Known Issues
 
-* There is an existing issue when running Mule Runtime 4.4 or 4.3 with `mule-maven-plugin` version post version 3.5.4, resulting in an error message reading `Cannot resolve the name 'mule:global-abstract-scheduling-strategy' to a(n) 'element declaration' component..` This has been reported to MuleSoft and has been acknowledged as a bug in the `mule-maven-plugin`. Solace is unable to work around this issue in Mule Runtime 4.4 and therefore this version cannot be used until MuleSoft fixes the bug. For version 4.3 of the Mule Runtime, you can downgrade the mule-maven-runtime to version 3.5.4 (or lower) and the Solace Connector v1.2 will work as expected.
+* There is an existing issue when running Mule Runtime 4.4 or 4.3 with `mule-maven-plugin` version post version 3.5.4, resulting in an error message reading `Cannot resolve the name 'mule:global-abstract-scheduling-strategy' to a(n) 'element declaration' component..`. This has been reported to MuleSoft and has been acknowledged as a bug in the `mule-maven-plugin`. Solace is unable to work around this issue in Mule Runtime 4.4 and therefore this version cannot be used until MuleSoft fixes the bug. For version 4.3 of the Mule Runtime, you can downgrade the mule-maven-runtime to version 3.5.4 (or lower) and the Solace Connector v1.2 will work as expected.
 
 ## v1.1.0
 **August 1, 2022**
