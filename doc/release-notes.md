@@ -6,12 +6,12 @@ Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and
 **January 20, 2023**
 ### Compatibility
 
-| Application/Service  | Version                                                                                                                                                                              |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Mule Runtime         | 4.3 - with `mule-maven-plugin` version 3.5.4<br/> 4.4 - see [Known Issues](#known-issues). This connector will not work in Mule Runtime 4.4 until a MuleSoft bug has been fixed |
-| Studio Version       | 7.9 and higher                                                                                                                                                                       |
-| PubSub+ Event Broker | 9.1 and higher                                                                                                                                                                       |
-| Java                 | 1.8 and later                                                                                                                                                                        |
+| Application/Service  | Version                                                                                                                                                                           |
+|----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Mule Runtime         | 4.3 - with `mule-maven-plugin` version 3.5.4<br/> 4.4 - see [Known Issues](#known-issues). This connector will not work in Mule Runtime 4.4 until a MuleSoft issue has been fixed |
+| Studio Version       | 7.9 and higher                                                                                                                                                                    |
+| PubSub+ Event Broker | 9.1 and higher                                                                                                                                                                    |
+| Java                 | 1.8 and later                                                                                                                                                                     |
 
 ### Fixed Issues
 
@@ -35,7 +35,7 @@ Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and
 
 ### Known Issues
 
-* There is an existing issue when running Mule Runtime 4.4 or 4.3 with `mule-maven-plugin` version post version 3.5.4, resulting in an error message reading `Cannot resolve the name 'mule:global-abstract-scheduling-strategy' to a(n) 'element declaration' component...`. This has been reported to MuleSoft and has been acknowledged as a bug in the `mule-maven-plugin`. Solace is unable to work around this issue in Mule Runtime 4.4 and therefore this version cannot be used until MuleSoft fixes the bug. For version 4.3 of the Mule Runtime, you can downgrade the mule-maven-runtime to version 3.5.4 (or lower) and the Solace Connector v1.2 will work as expected.
+* There is an existing issue when running Mule Runtime 4.4 or 4.3 with `mule-maven-plugin` version post version 3.5.4, resulting in an error message reading `Cannot resolve the name 'mule:global-abstract-scheduling-strategy' to a(n) 'element declaration' component...`. This has been reported to MuleSoft and has been acknowledged as an issue in the `mule-maven-plugin`. Solace is unable to work around this issue in Mule Runtime 4.4 and therefore this version cannot be used until MuleSoft has a fix. For version 4.3 of the Mule Runtime, you can downgrade the `mule-maven-plugin` to version 3.5.4 (or lower) and the Solace Connector v1.2 will work as expected.
 
 ## v1.1.0
 **August 1, 2022**
