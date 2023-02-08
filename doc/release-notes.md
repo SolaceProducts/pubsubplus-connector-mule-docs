@@ -3,7 +3,7 @@
 Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and PubSub+ Event Portal (event management) within MuleSoft Anypoint Platform, to make your MuleSoft integrations more reliable, agile, and event-driven.  
 
 ## v1.2.0
-**January 20, 2023**
+**February 08, 2023**
 ### Compatibility
 
 | Application/Service  | Version                                                                                                                                                                           |
@@ -20,6 +20,7 @@ Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and
 * Reconnection strategy is now fixed. The default reconnect retries will now be 0 instead of infinite. (SOL-65619)
 * Destination Name in Publish and Request Reply Operation is now fixed. Requires the attribute name `destination-type` to be updated to `destinationType` in the Mule Project XML file for Publish and Request Reply Operations. (SOL-84858)
 * Upgraded library dependency `com.solacesystems:sol-jcsmp` to 10.16.0.
+* Recover Session on error, is now by default without explicit error handling when consuming in AUTOMATIC_ON_FLOW_COMPLETION and MANUAL_CLIENT.
 
 ### New Features
 
