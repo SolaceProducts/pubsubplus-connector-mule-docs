@@ -838,9 +838,13 @@ For other optional parameters, refer to the [Common Parameters](#common-paramete
 ```xml
 <flow name="guaranteedPollingListener" >
   <solace:polling-queue-listener doc:name="Guaranteed Endpoint Polling Listener" config-ref="Solace_PubSub__Connector_Config" address="test/q">
-    <scheduling-strategy >
-      <fixed-frequency />
-    </scheduling-strategy>
+    <solace:polling-config-factory >
+      <solace:default-polling-config-factory >
+        <scheduling-strategy >
+          <fixed-frequency />
+        </scheduling-strategy>
+      </solace:default-polling-config-factory>
+    </solace:polling-config-factory>
   </solace:polling-queue-listener>
   <logger level="INFO" category="GUARANTEED-POLLING-SOURCE - " message="#[payload]"/>
 </flow>
