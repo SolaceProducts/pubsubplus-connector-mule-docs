@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.mulesoft.connectors.examples</groupId>
-	<artifactId>solace-pubsubplus-consume</artifactId>
+	<artifactId>solace-pubsubplus-pollinglistener</artifactId>
 	<version>1.0.0</version>
 	<packaging>mule-application</packaging>
 
-	<name>mule-solace-pubsubplus-connector-consume-demo</name>
+	<name>mule-solace-pubsubplus-connector-pollinglistener-demo</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
