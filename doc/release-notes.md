@@ -2,8 +2,8 @@
 
 Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and PubSub+ Event Portal (event management) within MuleSoft Anypoint Platform, to make your MuleSoft integrations more reliable, agile, and event-driven.  
 
-## v1.2.1
-**June 16, 2023**
+## v1.3.0
+**June 30, 2023**
 ### Compatibility
 
 | Application/Service  | Version         |
@@ -146,7 +146,7 @@ Add this dependency to your application pom.xml
 <dependency>
 	<groupId>com.solace.connector</groupId>
 	<artifactId>solace-mulesoft-connector</artifactId>
-	<version>1.2.0</version>
+	<version>1.3.0</version>
 	<classifier>mule-plugin</classifier>
 </dependency>
 ```
