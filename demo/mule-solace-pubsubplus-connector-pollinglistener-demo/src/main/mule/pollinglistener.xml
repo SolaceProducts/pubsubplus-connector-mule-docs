@@ -11,31 +11,43 @@ http://www.mulesoft.org/schema/mule/solace http://www.mulesoft.org/schema/mule/s
 	</solace:config>
 
 	<flow name="pollinglistenerfixedfrequency" doc:id="9a3cf20a-e508-4ac7-b325-fb6c75562488" initialState="stopped" >
-		<solace:polling-queue-listener address="test/q" doc:name="Guaranteed Endpoint Polling Listener" doc:id="9127306a-81b1-4e0d-a494-5fd5c9b943cd" config-ref="Solace_PubSub__Connector_Config_local" ackMode="MANUAL_CLIENT" fetchSize="5">
-			<scheduling-strategy >
-				<fixed-frequency frequency="30" startDelay="1" timeUnit="SECONDS"/>
-			</scheduling-strategy>
+		<solace:polling-queue-listener address="test/q" doc:name="Guaranteed Endpoint Polling Listener" doc:id="9127306a-81b1-4e0d-a494-5fd5c9b943cd" config-ref="Solace_PubSub__Connector_Config_local" ackMode="MANUAL_CLIENT">
+			<solace:polling-config-factory >
+				<solace:default-polling-config-factory fetchSize="5">
+					<scheduling-strategy >
+						<fixed-frequency frequency="30" startDelay="1" timeUnit="SECONDS"/>
+					</scheduling-strategy>
+				</solace:default-polling-config-factory>
+			</solace:polling-config-factory>
 		</solace:polling-queue-listener>
 		<logger level="INFO" doc:name="Logger" doc:id="6a2569a5-275e-4c07-8526-f4867116ffbe" message="Received Message: #[payload]"/>
 		<solace:ack doc:name="Ack" doc:id="921f91bc-f5e3-4724-96f1-3fbf500588e6" config-ref="Solace_PubSub__Connector_Config_local" messageRefId="#[attributes.messageReferenceId]"/>
 	</flow>
 
 	<flow name="pollinglistenercronexpression" doc:id="8323d70a-d4e0-43e0-a3f7-500c5d794522" initialState="stopped" >
-		<solace:polling-queue-listener address="test/q" doc:name="Guaranteed Endpoint Polling Listener" doc:id="74b96196-008c-4d95-acb7-60fd418f2df2" config-ref="Solace_PubSub__Connector_Config_local" ackMode="MANUAL_CLIENT" fetchSize="5">
-			<scheduling-strategy >
-				<cron expression="1/30 * * * * ?" timeZone="America/Los_Angeles" />
-			</scheduling-strategy>
+		<solace:polling-queue-listener address="test/q" doc:name="Guaranteed Endpoint Polling Listener" doc:id="74b96196-008c-4d95-acb7-60fd418f2df2" config-ref="Solace_PubSub__Connector_Config_local" ackMode="MANUAL_CLIENT">
+			<solace:polling-config-factory >
+				<solace:default-polling-config-factory  fetchSize="5">
+					<scheduling-strategy >
+						<cron expression="1/30 * * * * ?" timeZone="America/Los_Angeles" />
+					</scheduling-strategy>
+				</solace:default-polling-config-factory>
+			</solace:polling-config-factory>
 		</solace:polling-queue-listener>
 		<logger level="INFO" doc:name="Logger" doc:id="7c84562c-502b-4e4a-a269-bde14d6c6f97" message="Received Message: #[payload]"/>
 		<solace:ack doc:name="Ack" doc:id="6a7e2435-64a4-4257-a726-f8d79ec9257f" config-ref="Solace_PubSub__Connector_Config_local" messageRefId="#[attributes.messageReferenceId]"/>
 	</flow>
 
 	<flow name="pollinglistenercircuitbreaker" doc:id="8323d70a-d4e0-43e0-a3f7-500c5d794522" maxConcurrency="1" initialState="stopped">
-		<solace:polling-queue-listener address="test/q" doc:name="Guaranteed Endpoint Polling Listener" doc:id="74b96196-008c-4d95-acb7-60fd418f2df2" config-ref="Solace_PubSub__Connector_Config_local" ackMode="MANUAL_CLIENT" fetchSize="5">
-			<scheduling-strategy >
-				<fixed-frequency frequency="30" startDelay="1" timeUnit="SECONDS"/>
-			</scheduling-strategy>
+		<solace:polling-queue-listener address="test/q" doc:name="Guaranteed Endpoint Polling Listener" doc:id="74b96196-008c-4d95-acb7-60fd418f2df2" config-ref="Solace_PubSub__Connector_Config_local" ackMode="MANUAL_CLIENT">
 			<solace:circuit-breaker onErrorTypes="DUMMY_HTTP:CONNECTIVITY" errorsThreshold="3" tripTimeout="60" tripTimeoutUnit="SECONDS" />
+			<solace:polling-config-factory >
+				<solace:default-polling-config-factory  fetchSize="5">
+					<scheduling-strategy >
+						<fixed-frequency frequency="30" startDelay="1" timeUnit="SECONDS"/>
+					</scheduling-strategy>
+				</solace:default-polling-config-factory>
+			</solace:polling-config-factory>
 		</solace:polling-queue-listener>
 		<logger level="INFO" doc:name="Logger" doc:id="b81aae97-4723-42c9-8564-a135ffb3e7ae" message="Received Message: #[payload]"/>
 		<raise-error doc:name="Raise error" doc:id="789faea3-3c3c-495b-b4fb-5a012d9cb7f0" type="DUMMY_HTTP:CONNECTIVITY"/>
