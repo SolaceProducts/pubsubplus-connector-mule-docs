@@ -2,6 +2,23 @@
 
 Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and PubSub+ Event Portal (event management) within MuleSoft Anypoint Platform, to make your MuleSoft integrations more reliable, agile, and event-driven.  
 
+## v1.3.0
+**June 30, 2023**
+### Compatibility
+
+| Application/Service  | Version         |
+|----------------------|-----------------|
+| Mule Runtime         | 4.3 and higher  |
+| Studio Version       | 7.9 and higher  |
+| PubSub+ Event Broker | 9.1 and higher  |
+| Java                 | 1.8 and later   |
+
+### Fixed Issues
+
+* Fixed the issue with Mule Runtime 4.3 (mule-maven-plugin version 3.6.0 and above) and Mule Runtime 4.4. (SOL-96888)
+
+**Note:** <em>It was necessary to change some config elements of the Guaranteed Endpoint Polling Listener to address the issue mentioned as fixed above. Therefore, you must remove any existing Guaranteed Endpoint Polling Listeners from your Mule flows, save the project, and then add new Guaranteed Endpoint Polling Listeners in your flows, as needed. This is only necessary for flows created before upgrading to v1.2.1 of the Solace connector. </em>
+
 ## v1.2.0
 **February 08, 2023**
 ### Compatibility
@@ -129,7 +146,7 @@ Add this dependency to your application pom.xml
 <dependency>
 	<groupId>com.solace.connector</groupId>
 	<artifactId>solace-mulesoft-connector</artifactId>
-	<version>1.2.0</version>
+	<version>1.3.0</version>
 	<classifier>mule-plugin</classifier>
 </dependency>
 ```
