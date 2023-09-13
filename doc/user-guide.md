@@ -26,6 +26,7 @@ Contents:
     + [Circuit Breaker Configuration](#circuit-breaker-configuration)
         * [Global Circuit Breaker](#global-circuit-breaker)
         * [Private Circuit Breaker](#private-circuit-breaker)
+    * [Enabling Debug Logs](#enabling-debug-logs)
   * [Accelerate Application Development Using the Event Catalog](#accelerate-application-development-using-the-event-catalog)
   * [Common Parameters](#common-parameters)
       - [Event Portal integration related Parameters](#event-portal-integration-related-parameters)
@@ -345,6 +346,49 @@ To configure:
 	<solace:circuit-breaker onErrorTypes="HTTP:CONNECTIVITY" errorsThreshold="5" tripTimeout="30000" />
 </solace:polling-queue-listener>
 ```
+
+---
+
+### Enabling Debug Logs
+
+Debug logs provide detailed information about the operation and potential issues of the Solace Broker connector in the MuleSoft environment. To enable debug logs for the Solace MuleSoft connector, follow the steps below:
+
+#### **Step 1: Navigate to the Project Resources**
+
+- Open the MuleSoft connector app project in Anypoint Studio.
+- Navigate to the `src/main/resources` folder.
+
+#### **Step 2: Modify the Log Configuration File**
+
+- Locate the `log4j2.xml` file within the folder.
+- Open this file to edit the logging configuration.
+
+#### **Step 3: Add the Necessary AsyncLogger Entries**
+
+Inside the `<Loggers>` tag of the `log4j2.xml` file, insert the desired `AsyncLogger` entries:
+
+*For Solace API (JCSMP) logs*:
+```xml
+<AsyncLogger name="com.solacesystems.jcsmp" level="INFO"/>
+```
+
+*For Basic Solace MuleSoft Connector logs*:
+```xml
+<AsyncLogger name="com.solace.connector.mulesoft" level="INFO"/>
+```
+
+> **Note:** Modify the `level` attribute for desired log detail. Options include `DEBUG`, `WARN`, `ERROR`, and others.
+
+#### **Step 4: Save and Relaunch the Application**
+
+- After adding the required `AsyncLogger` entries, save the `log4j2.xml` file.
+- Restart your MuleSoft application. The newly enabled logs should be visible in the console or designated log file.
+
+![alt text](/doc/images/EnabligDebugLogs.png "Enabling Debug Logs")
+
+For more details or advanced logging needs, refer to the connector's official documentation or reach out to Solace support.
+
+---
 
 ## Accelerate Application Development Using the Event Catalog
 
