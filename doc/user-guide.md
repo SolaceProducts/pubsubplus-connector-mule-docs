@@ -13,6 +13,7 @@ Contents:
     + [General Configuration, Connection Tab](#general-configuration-connection-tab)
         * [PubSub+ broker Connection Details](#pubsub-broker-connection-details)
         * [JCSMP Properties](#jcsmp-properties)
+        * [OAuth Connection](#oauth-connection)
     + [General Configuration, Security Tab](#general-configuration-security-tab)
     + [General Configuration, Advanced Tab](#general-configuration-advanced-tab)
         * [Maximum wait time for MANUAL_CLIENT Ack](#maximum-wait-time-for-manual_client-ack)
@@ -210,6 +211,82 @@ An example XML representation of this configuration is as follows:
   </solace:connection>
 </solace:config>
 ```
+
+---
+
+##### OAuth Connection
+
+When integrating OAuth with the connector, bear the following considerations in mind:
+
+###### **Basic Authorization**
+You don't need to provide credentials for Basic Authorization (i.e., Username and Password).
+
+###### **OAuth Scheme**
+- Set the `AUTHENTICATION_SCHEME` to `AUTHENTICATION_SCHEME_OAUTH2` within the JCSMP properties.
+
+###### **Access Token**
+- Configure the property `OAUTH2_ACCESS_TOKEN` with a valid, non-expired access token.
+
+###### **Token Refresh**
+If you're using a temporary access token (with an expiration date) and wish to ensure uninterrupted operation of the connector:
+
+- Populate the following properties in the JCSMP properties section:
+    - `OAUTH2_REFRESH_TOKEN`: Your Refresh Token.
+    - `OAUTH2_CLIENT_ID`: Your Client ID.
+    - `OAUTH2_REFRESH_TOKEN_URL`: The OAuth Server URL used for token refreshment.
+
+These settings enable the connector to auto-refresh the token, thus maintaining an active connection.
+
+###### **SSL Verification**
+Should you provide the OAuth server URL for token refreshment and want to disable SSL verification, set the `SSL_VALIDATE_CERTIFICATE` property to `false`.
+
+###### **Token Refresh Buffer**
+The connector periodically refreshes the token, relying on a buffer time percentage of the token's entire lifetime. By default, this buffer is set to 30% of the token's lifespan. However, you can modify this buffer by adjusting the `OAUTH2_REFRESH_BUFFER_PERCENTAGE` property. This value can range between 0 and 1, excluding 0.
+
+###### **Token Cache**
+The connector doesn't cache both access and refresh tokens. If for any reason the connector halts its operation, it will revert to the original token provided in the Connection tab upon restart. Should these tokens become invalid by then, the connector will fail to connect.
+
+###### **Reconnection Config**
+By default the JCSMP reconnection client level is disabled, which stops the JCSMP API to keep the connection alive even if the token is being refreshed. 
+It's necessary to either enable the JCSMP reconnection or set a Mule Runtime Reconnection Strategy. Either of the options will enable the use of OAuth connection, but optimally it's prefered to enable JCSMP reconnection, as it keeps seamlessly the connection alive while Mule Runtime cease the connection and re-creates it, consuming more resources.
+For reconnection setup details, refer to the Reconnection section on the technical reference documentation.
+
+An example XML configuration for OAuth might resemble:
+
+
+1. Permanent or Temporary Access Token (No Refresh)
+```xml
+<solace:config name="Solace_PubSub__Connector_Config">
+  <solace:connection msgVPN="myVPN" brokerHost="tcps://myEventBroker:55443" clientUserName="myUsername" password="myPassword">
+    <solace:jcsmp-properties>
+      ...
+      <solace:jcsmp-property key="AUTHENTICATION_SCHEME" value="AUTHENTICATION_SCHEME_OAUTH2" />
+      <solace:jcsmp-property key="OAUTH2_ACCESS_TOKEN" value="your_access_token" />
+      ...
+    </solace:jcsmp-properties>
+  </solace:connection>
+</solace:config>
+```
+
+2. Access Token and Refresh Token (Using refresh token feature)
+```xml
+<solace:config name="Solace_PubSub__Connector_Config">
+  <solace:connection msgVPN="myVPN" brokerHost="tcps://myEventBroker:55443" clientUserName="myUsername" password="myPassword">
+    <solace:jcsmp-properties>
+      ...
+      <solace:jcsmp-property key="AUTHENTICATION_SCHEME" value="AUTHENTICATION_SCHEME_OAUTH2" />
+      <solace:jcsmp-property key="OAUTH2_ACCESS_TOKEN" value="your_access_token" />
+        <solace:jcsmp-property key="OAUTH2_REFRESH_TOKEN" value="your_refresh_token" />
+        <solace:jcsmp-property key="OAUTH2_CLIENT_ID" value="your_client_id_token" />
+        <solace:jcsmp-property key="OAUTH2_REFRESH_TOKEN_URL" value="your_refresh_token_url" />
+        <solace:jcsmp-property key="CLIENT_CHANNEL_PROPERTIES.ReconnectRetries" value="numberOfRetries" />
+      ...
+    </solace:jcsmp-properties>
+  </solace:connection>
+</solace:config>
+```
+
+---
 
 ### General Configuration, Security Tab
 
