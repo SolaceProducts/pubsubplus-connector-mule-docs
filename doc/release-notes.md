@@ -2,6 +2,24 @@
 
 Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and PubSub+ Event Portal (event management) within MuleSoft Anypoint Platform, to make your MuleSoft integrations more reliable, agile, and event-driven.  
 
+## v1.4.0
+**September 18, 2023**
+### Compatibility
+
+| Application/Service  | Version         |
+|----------------------|-----------------|
+| Mule Runtime         | 4.3 and higher  |
+| Studio Version       | 7.9 and higher  |
+| PubSub+ Event Broker | 9.1 and higher  |
+| Java                 | 1.8 and later   |
+
+### New Features
+* Connector Support OAuth Token Refresh. Now given the needed properties, the connector is able to support the refresh OAuth token process in the application-level. 
+* JCSMP Properties now supports Mule Expression Language (MEL).
+
+### Fixed Issues
+* Removed unnecessary dependency
+
 ## v1.3.1
 **July 07, 2023**
 ### Compatibility
@@ -161,7 +179,7 @@ Add this dependency to your application pom.xml
 <dependency>
 	<groupId>com.solace.connector</groupId>
 	<artifactId>solace-mulesoft-connector</artifactId>
-	<version>1.3.1</version>
+	<version>1.4.0</version>
 	<classifier>mule-plugin</classifier>
 </dependency>
 ```

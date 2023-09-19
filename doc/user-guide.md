@@ -247,9 +247,8 @@ The connector periodically refreshes the token, relying on a buffer time percent
 The connector doesn't cache both access and refresh tokens. If for any reason the connector halts its operation, it will revert to the original token provided in the Connection tab upon restart. Should these tokens become invalid by then, the connector will fail to connect.
 
 ###### **Reconnection Config**
-By default the JCSMP reconnection client level is disabled, which stops the JCSMP API to keep the connection alive even if the token is being refreshed. 
-It's necessary to either enable the JCSMP reconnection or set a Mule Runtime Reconnection Strategy. Either of the options will enable the use of OAuth connection, but optimally it's prefered to enable JCSMP reconnection, as it keeps seamlessly the connection alive while Mule Runtime cease the connection and re-creates it, consuming more resources.
-For reconnection setup details, refer to the Reconnection section on the technical reference documentation.
+It is necessary to either enable the Solace JCSMP API-level reconnection or set a Mule Runtime Reconnection Strategy to allow for a token refresh for uninterrupted connection to the broker. Either of these options will enable OAuth connections, but Solace recommends the use of JCSMP API properties, as it seamlessly keeps the connection alive using the same connection.
+If a Mule Runtime Reconnection Strategy is used, the connection will be torn down and recreated on refresh. This consumes more resources and causes connection churn on the broker.
 
 An example XML configuration for OAuth might resemble:
 
