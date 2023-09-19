@@ -18,6 +18,7 @@ Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and
 * JCSMP Properties now supports Mule Expression Language (MEL).
 
 ### Fixed Issues
+* Now Solace connector support non-repeatable streams payload during retries (SOL-103111).
 * Removed unnecessary dependency
 
 ## v1.3.1
