@@ -14,6 +14,7 @@ Contents:
         * [PubSub+ broker Connection Details](#pubsub-broker-connection-details)
         * [JCSMP Properties](#jcsmp-properties)
     + [General Configuration, Security Tab](#general-configuration-security-tab)
+        * [OAuth Connection](#oauth-connection)
     + [General Configuration, Advanced Tab](#general-configuration-advanced-tab)
         * [Maximum wait time for MANUAL_CLIENT Ack](#maximum-wait-time-for-manual_client-ack)
     + [Connector Defaults Configuration](#connector-defaults-configuration)
@@ -26,6 +27,7 @@ Contents:
     + [Circuit Breaker Configuration](#circuit-breaker-configuration)
         * [Global Circuit Breaker](#global-circuit-breaker)
         * [Private Circuit Breaker](#private-circuit-breaker)
+    * [Enabling Debug Logs](#enabling-debug-logs)
   * [Accelerate Application Development Using the Event Catalog](#accelerate-application-development-using-the-event-catalog)
   * [Common Parameters](#common-parameters)
       - [Event Portal integration related Parameters](#event-portal-integration-related-parameters)
@@ -220,6 +222,49 @@ For configuration details, refer to the [Configure TLS with Keystores and Trusts
 
 > Note: setting trusted root certificates for a TLS connection is not required if they are already included in the default trusted public certificates of your local Java installation. This is likely the case for PubSub+ Cloud. However, you should verify whether this is the case in all target environments.
 
+#### OAuth 2.0 Client Credentials Grant
+
+##### Overview
+The Solace PubSub+ Connector for Mule 4 now supports the OAuth 2.0 Client Credentials Grant, enabling robust and secure authentication for machine-to-machine communication. This feature allows the connector to autonomously fetch and refresh access tokens, ensuring uninterrupted connectivity without manual intervention.
+
+##### Automatic Connection Setup
+When the OAuth 2.0 Client Credentials Grant is configured, the connector automatically sets up the connection to the Solace broker to use OAuth 2.0 for authentication. This eliminates the need for Basic authentication, streamlining the security setup and ensuring a more secure authentication method is used.
+
+##### Configuration
+To use the OAuth 2.0 Client Credentials Grant, configure the following parameters in the Security tab of the connection configuration UI:
+
+- **Token Provider URL**: The endpoint URL to acquire new access tokens.
+- **Client ID**: The identifier for the application requesting the token.
+- **Client Secret**: A secret known only to the application and the authorization server.
+- **Scope**: (Optional) The scope of the access request.
+- **Resource**: (Optional) The target resource for the access token.
+- **Audience**: (Optional) The intended audience for the token.
+- **Refresh Buffer Time**: The absolute time period in which the application will fetch a new token to keep the connection alive.
+- **Custom Parameters**: (Optional) Additional HTTP token request parameters.
+
+##### SSL Validation Option
+The SSL validation option allows for the disabling of SSL validation for the token provider URL. This is particularly useful in development or testing environments where self-signed certificates are used.
+
+##### JCSMP Client Reconnect Retries
+When using the OAuth 2.0 Client Credentials grant, the connector will enable the JCSMP client level if not already enabled by the user and it'll set it to 3 retries by default.
+
+##### Implementation Details
+- **Token Retrieval**: The connector requests a new token using the Client Credentials Grant complying with [RFC 6749 Section 4.4](https://datatracker.ietf.org/doc/html/rfc6749#section-4.4). If your server deviates from RFC 6749 Section 4.4 or have specific intrinsic configurations beyond the standard, you may use the custom properties to adjust to your scenario.
+```
+curl -X POST "https://example.com/oauth/token"
+-H "Content-Type: application/x-www-form-urlencoded"
+-H "Accept: application/json"
+-d "grant_type=client_credentials"
+-d "client_id=YOUR_CLIENT_ID"
+-d "client_secret=YOUR_CLIENT_SECRET"
+-d "scope=YOUR_SCOPE"
+-d "resource=YOUR_RESOURCE"
+-d "audience=YOUR_AUDIENCE"
+```
+##### Limitations and Considerations
+- The connector does not introspect the token's validity period. If the refresh time buffer exceeds the token's lifespan, it may cause disconnection.
+- The current UI setup allows for configuring multiple authentication methods simultaneously. Ensure to set only OAuth 2.0 to use this feature. Exclusive selection of authentication types will be addressed in a future release.
+
 ### General Configuration, Advanced Tab
 
 Use the Advanced tab to configure additional options for the connector.
@@ -345,6 +390,49 @@ To configure:
 	<solace:circuit-breaker onErrorTypes="HTTP:CONNECTIVITY" errorsThreshold="5" tripTimeout="30000" />
 </solace:polling-queue-listener>
 ```
+
+---
+
+### Enabling Debug Logs
+
+Debug logs provide detailed information about the operation and potential issues of the Solace Broker connector in the MuleSoft environment. To enable debug logs for the Solace MuleSoft connector, follow the steps below:
+
+#### **Step 1: Navigate to the Project Resources**
+
+- Open the MuleSoft connector app project in Anypoint Studio.
+- Navigate to the `src/main/resources` folder.
+
+#### **Step 2: Modify the Log Configuration File**
+
+- Locate the `log4j2.xml` file within the folder.
+- Open this file to edit the logging configuration.
+
+#### **Step 3: Add the Necessary AsyncLogger Entries**
+
+Inside the `<Loggers>` tag of the `log4j2.xml` file, insert the desired `AsyncLogger` entries:
+
+*For Solace API (JCSMP) logs*:
+```xml
+<AsyncLogger name="com.solacesystems.jcsmp" level="INFO"/>
+```
+
+*For Basic Solace MuleSoft Connector logs*:
+```xml
+<AsyncLogger name="com.solace.connector.mulesoft" level="INFO"/>
+```
+
+> **Note:** Modify the `level` attribute for desired log detail. Options include `DEBUG`, `WARN`, `ERROR`, and others.
+
+#### **Step 4: Save and Relaunch the Application**
+
+- After adding the required `AsyncLogger` entries, save the `log4j2.xml` file.
+- Restart your MuleSoft application. The newly enabled logs should be visible in the console or designated log file.
+
+![alt text](/doc/images/EnabligDebugLogs.png "Enabling Debug Logs")
+
+For more details or advanced logging needs, refer to the connector's official documentation or reach out to Solace support.
+
+---
 
 ## Accelerate Application Development Using the Event Catalog
 
