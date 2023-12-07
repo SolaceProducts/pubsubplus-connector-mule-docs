@@ -5880,8 +5880,6 @@ Set the following properties to the number of times you would prefer the retries
 `CLIENT_CHANNEL_PROPERTIES.connectRetries`
 
 `CLIENT_CHANNEL_PROPERTIES.ReconnectRetries`
-
-**Note:** <em> When using OAuth connection, it's necessary to enable  JCMSP reconnect client level or set up Mule Runtime Reconnect Strategy. Preferably JCSMP reconnect level. </em>
  
 Mule Runtime Reconnect Strategy has the following configurations:
 

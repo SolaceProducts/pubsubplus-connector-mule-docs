@@ -13,8 +13,8 @@ Contents:
     + [General Configuration, Connection Tab](#general-configuration-connection-tab)
         * [PubSub+ broker Connection Details](#pubsub-broker-connection-details)
         * [JCSMP Properties](#jcsmp-properties)
-        * [OAuth Connection](#oauth-connection)
     + [General Configuration, Security Tab](#general-configuration-security-tab)
+        * [OAuth Connection](#oauth-connection)
     + [General Configuration, Advanced Tab](#general-configuration-advanced-tab)
         * [Maximum wait time for MANUAL_CLIENT Ack](#maximum-wait-time-for-manual_client-ack)
     + [Connector Defaults Configuration](#connector-defaults-configuration)
@@ -212,81 +212,6 @@ An example XML representation of this configuration is as follows:
 </solace:config>
 ```
 
----
-
-##### OAuth Connection
-
-When integrating OAuth with the connector, bear the following considerations in mind:
-
-###### **Basic Authorization**
-You don't need to provide credentials for Basic Authorization (i.e., Username and Password).
-
-###### **OAuth Scheme**
-- Set the `AUTHENTICATION_SCHEME` to `AUTHENTICATION_SCHEME_OAUTH2` within the JCSMP properties.
-
-###### **Access Token**
-- Configure the property `OAUTH2_ACCESS_TOKEN` with a valid, non-expired access token.
-
-###### **Token Refresh**
-If you're using a temporary access token (with an expiration date) and wish to ensure uninterrupted operation of the connector:
-
-- Populate the following properties in the JCSMP properties section:
-    - `OAUTH2_REFRESH_TOKEN`: Your Refresh Token.
-    - `OAUTH2_CLIENT_ID`: Your Client ID.
-    - `OAUTH2_REFRESH_TOKEN_URL`: The OAuth Server URL used for token refreshment.
-
-These settings enable the connector to auto-refresh the token, thus maintaining an active connection.
-
-###### **SSL Verification**
-Should you provide the OAuth server URL for token refreshment and want to disable SSL verification, set the `SSL_VALIDATE_CERTIFICATE` property to `false`.
-
-###### **Token Refresh Buffer**
-The connector periodically refreshes the token, relying on a buffer time percentage of the token's entire lifetime. By default, this buffer is set to 30% of the token's lifespan. However, you can modify this buffer by adjusting the `OAUTH2_REFRESH_BUFFER_PERCENTAGE` property. This value can range between 0 and 1, excluding 0.
-
-###### **Token Cache**
-The connector doesn't cache both access and refresh tokens. If for any reason the connector halts its operation, it will revert to the original token provided in the Connection tab upon restart. Should these tokens become invalid by then, the connector will fail to connect.
-
-###### **Reconnection Config**
-It is necessary to either enable the Solace JCSMP API-level reconnection or set a Mule Runtime Reconnection Strategy to allow for a token refresh for uninterrupted connection to the broker. Either of these options will enable OAuth connections, but Solace recommends the use of JCSMP API properties, as it seamlessly keeps the connection alive using the same connection.
-If a Mule Runtime Reconnection Strategy is used, the connection will be torn down and recreated on refresh. This consumes more resources and causes connection churn on the broker.
-
-An example XML configuration for OAuth might resemble:
-
-
-1. Permanent or Temporary Access Token (No Refresh)
-```xml
-<solace:config name="Solace_PubSub__Connector_Config">
-  <solace:connection msgVPN="myVPN" brokerHost="tcps://myEventBroker:55443" clientUserName="myUsername" password="myPassword">
-    <solace:jcsmp-properties>
-      ...
-      <solace:jcsmp-property key="AUTHENTICATION_SCHEME" value="AUTHENTICATION_SCHEME_OAUTH2" />
-      <solace:jcsmp-property key="OAUTH2_ACCESS_TOKEN" value="your_access_token" />
-      ...
-    </solace:jcsmp-properties>
-  </solace:connection>
-</solace:config>
-```
-
-2. Access Token and Refresh Token (Using refresh token feature)
-```xml
-<solace:config name="Solace_PubSub__Connector_Config">
-  <solace:connection msgVPN="myVPN" brokerHost="tcps://myEventBroker:55443" clientUserName="myUsername" password="myPassword">
-    <solace:jcsmp-properties>
-      ...
-      <solace:jcsmp-property key="AUTHENTICATION_SCHEME" value="AUTHENTICATION_SCHEME_OAUTH2" />
-      <solace:jcsmp-property key="OAUTH2_ACCESS_TOKEN" value="your_access_token" />
-        <solace:jcsmp-property key="OAUTH2_REFRESH_TOKEN" value="your_refresh_token" />
-        <solace:jcsmp-property key="OAUTH2_CLIENT_ID" value="your_client_id_token" />
-        <solace:jcsmp-property key="OAUTH2_REFRESH_TOKEN_URL" value="your_refresh_token_url" />
-        <solace:jcsmp-property key="CLIENT_CHANNEL_PROPERTIES.ReconnectRetries" value="numberOfRetries" />
-      ...
-    </solace:jcsmp-properties>
-  </solace:connection>
-</solace:config>
-```
-
----
-
 ### General Configuration, Security Tab
 
 Use the Security configuration tab to configure TLS options for the broker connection.
@@ -296,6 +221,49 @@ Use the Security configuration tab to configure TLS options for the broker conne
 For configuration details, refer to the [Configure TLS with Keystores and Truststores](https://docs.mulesoft.com/mule-runtime/latest/tls-configuration) section of the MuleSoft documentation.
 
 > Note: setting trusted root certificates for a TLS connection is not required if they are already included in the default trusted public certificates of your local Java installation. This is likely the case for PubSub+ Cloud. However, you should verify whether this is the case in all target environments.
+
+#### OAuth 2.0 Client Credentials Grant
+
+##### Overview
+The Solace PubSub+ Connector for Mule 4 now supports the OAuth 2.0 Client Credentials Grant, enabling robust and secure authentication for machine-to-machine communication. This feature allows the connector to autonomously fetch and refresh access tokens, ensuring uninterrupted connectivity without manual intervention.
+
+##### Automatic Connection Setup
+When the OAuth 2.0 Client Credentials Grant is configured, the connector automatically sets up the connection to the Solace broker to use OAuth 2.0 for authentication. This eliminates the need for Basic authentication, streamlining the security setup and ensuring a more secure authentication method is used.
+
+##### Configuration
+To use the OAuth 2.0 Client Credentials Grant, configure the following parameters in the Security tab of the connection configuration UI:
+
+- **Token Provider URL**: The endpoint URL to acquire new access tokens.
+- **Client ID**: The identifier for the application requesting the token.
+- **Client Secret**: A secret known only to the application and the authorization server.
+- **Scope**: (Optional) The scope of the access request.
+- **Resource**: (Optional) The target resource for the access token.
+- **Audience**: (Optional) The intended audience for the token.
+- **Refresh Buffer Time**: The absolute time period in which the application will fetch a new token to keep the connection alive.
+- **Custom Parameters**: (Optional) Additional HTTP token request parameters.
+
+##### SSL Validation Option
+The SSL validation option allows for the disabling of SSL validation for the token provider URL. This is particularly useful in development or testing environments where self-signed certificates are used.
+
+##### JCSMP Client Reconnect Retries
+When using the OAuth 2.0 Client Credentials grant, the connector will enable the JCSMP client level if not already enabled by the user and it'll set it to 3 retries by default.
+
+##### Implementation Details
+- **Token Retrieval**: The connector requests a new token using the Client Credentials Grant complying with [RFC 6749 Section 4.4](https://datatracker.ietf.org/doc/html/rfc6749#section-4.4). If your server deviates from RFC 6749 Section 4.4 or have specific intrinsic configurations beyond the standard, you may use the custom properties to adjust to your scenario.
+```
+curl -X POST "https://example.com/oauth/token"
+-H "Content-Type: application/x-www-form-urlencoded"
+-H "Accept: application/json"
+-d "grant_type=client_credentials"
+-d "client_id=YOUR_CLIENT_ID"
+-d "client_secret=YOUR_CLIENT_SECRET"
+-d "scope=YOUR_SCOPE"
+-d "resource=YOUR_RESOURCE"
+-d "audience=YOUR_AUDIENCE"
+```
+##### Limitations and Considerations
+- The connector does not introspect the token's validity period. If the refresh time buffer exceeds the token's lifespan, it may cause disconnection.
+- The current UI setup allows for configuring multiple authentication methods simultaneously. Ensure to set only OAuth 2.0 to use this feature. Exclusive selection of authentication types will be addressed in a future release.
 
 ### General Configuration, Advanced Tab
 

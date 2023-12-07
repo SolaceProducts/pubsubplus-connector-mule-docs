@@ -3,7 +3,7 @@
 Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and PubSub+ Event Portal (event management) within MuleSoft Anypoint Platform, to make your MuleSoft integrations more reliable, agile, and event-driven.  
 
 ## v1.4.0
-**September 18, 2023**
+**November 15, 2023**
 ### Compatibility
 
 | Application/Service  | Version         |
@@ -14,7 +14,7 @@ Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and
 | Java                 | 1.8 and later   |
 
 ### New Features
-* Connector Support OAuth Token Refresh. Now given the needed properties, the connector is able to support the refresh OAuth token process in the application-level. 
+* We've introduced support for the OAuth 2.0 Client Credentials grant type under Security Tab. This allows applications to request an access token using their client credentials (Client ID and Client Secret) to authenticate against the authorization server and get a token directly. This strategy is particularly beneficial for long-lived and stable connections. (SOL-104703)
 * JCSMP Properties now supports Mule Expression Language (MEL).
 
 ### Fixed Issues
