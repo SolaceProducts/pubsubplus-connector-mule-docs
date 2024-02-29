@@ -1,6 +1,6 @@
 # Solace PubSub+ Connector - Mule 4, Documentation and Examples
 
-v1.3.x
+v1.4.x
 
 ## About the Connector
 
@@ -75,7 +75,7 @@ Connector
 Published by: MuleSoft Partner
 </br>
 
-Published on: January, 2023
+Published on: March, 2024
 </br>
 
 Level: MuleSoft-Certified
