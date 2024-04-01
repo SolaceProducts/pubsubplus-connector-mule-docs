@@ -2,6 +2,20 @@
 
 Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and PubSub+ Event Portal (event management) within MuleSoft Anypoint Platform, to make your MuleSoft integrations more reliable, agile, and event-driven.  
 
+## v1.4.1
+**March 01, 2024**
+### Compatibility
+
+| Application/Service  | Version         |
+|----------------------|-----------------|
+| Mule Runtime         | 4.3 and higher  |
+| Studio Version       | 7.9 and higher  |
+| PubSub+ Event Broker | 9.1 and higher  |
+| Java                 | 1.8 and later   |
+
+### Fixed Issues
+* Fixed the flow recover session to work in-sync with the Circuit Breaker config
+
 ## v1.4.0
 **November 15, 2023**
 ### Compatibility
