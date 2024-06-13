@@ -1,6 +1,23 @@
 # Solace PubSub+ Connector for Mule 4 Release Notes
 
-Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and PubSub+ Event Portal (event management) within MuleSoft Anypoint Platform, to make your MuleSoft integrations more reliable, agile, and event-driven.  
+Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and PubSub+ Event Portal (event management) within MuleSoft Anypoint Platform, to make your MuleSoft integrations more reliable, agile, and event-driven.
+
+## v1.5.0
+**May 31, 2023**
+### Compatibility
+
+| Application/Service  | Version         |
+|----------------------|-----------------|
+| Mule Runtime         | 4.3 and higher  |
+| Studio Version       | 7.9 and higher  |
+| PubSub+ Event Broker | 9.1 and higher  |
+| Java                 | 1.8 and later   |
+
+### New Features
+* Added Java 17 support
+
+### Fixed Issues
+* Fixed issue when using OAuth connection with Mule Reconnection Strategy which previously would cause a bootloop for disconnections over then 15 seconds.
 
 ## v1.4.1
 **March 01, 2024**
