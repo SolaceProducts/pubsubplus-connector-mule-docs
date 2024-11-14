@@ -57,6 +57,11 @@ Contents:
         * [Connector Configuration](#connector-configuration-2)
         * [Message Reference Id](#message-reference-id)
       - [Example](#example-2)
+    + [Nack Operation](#nack-operation)
+        - [Required Parameters](#required-parameters-3)
+            * [Connector Configuration](#connector-configuration-3)
+            * [Message Reference Id](#message-reference-id)
+        - [Example](#example-3)
     + [Request-Reply Operation](#request-reply-operation)
       - [Required Parameters](#required-parameters-3)
         * [Connector Configuration](#connector-configuration-3)
@@ -668,9 +673,64 @@ Specifies the "Reference Id" property from the Solace Message Properties of the 
 
 For more details, refer to the [Manual Acknowledgement](../demo/README.md#manualack---manual-acknowledgement) example.
 
+### Nack Operation
+
+This operation negatively acknowledges (NACK) a guaranteed message using ["Application" Negative Acknowledgement](https://docs.solace.com/API/API-Developer-Guide/Acknowledging-Messages.htm). This NACK indicates that the message has been settled as either FAILED or REJECTED in the event broker's queue. This setting is only applicable if `ackMode="MANUAL_CLIENT"` has been set in a previous "Consume" operation or "Guaranteed Endpoint Listener" or "Guaranteed Endpoint Polling Listener" source.
+
+It presents two settlement outcomes:
+
+FAILED: This negative acknowledgment notifies the event broker that the message was not processed successfully. The event broker will attempt to redeliver the message while adhering to delivery count limits.
+
+REJECTED: This negative acknowledgment notifies the event broker that the message was not accepted. The event broker will remove the message from its queue and then move the message to the Dead Message Queue (DMQ) if it is configured.
+
+Note: If no NACK is received within the allowed time, it is settled with FAILED outcome and becomes available for redelivery. The default timeout is 2 minutes, which can be adjusted in the [General Connection Configuration, Advanced Tab](#general-configuration-advanced-tab).
+
+#### Required Parameters
+
+The following minimum parameters are required. There are no optional parameters.
+
+##### Connector Configuration
+
+Selects which connector configuration to use.
+
+##### Message Reference Id
+
+Specifies the "Reference Id" property from the Solace Message Properties of the message to be negatively acknowledged.
+
+>Note that this is NOT the "Message Id" property!
+
+##### Settlement Outcome
+
+FAILED (Default) <br/>
+REJECTED
+
+
+#### Example
+
+![alt text](/doc/images/Nack-Example.png "Nack Example")
+
+```xml
+<flow name="gel-manual-nack" doc:id="c4be8117-88ef-468f-b028-5027244597ac" initialState="started">
+    <solace:queue-listener address="gel2" doc:name="Guaranteed Endpoint Listener" doc:id="774a0348-e729-4303-927d-70b9c8fd26c5" config-ref="Solace_PubSub__Connector_Config12" ackMode="MANUAL_CLIENT">
+    </solace:queue-listener>
+    <logger level="INFO" doc:name="Logger" doc:id="06590ba3-347e-4d53-9fef-9f88b1f068e3" message="Payload is #[payload]" />
+    <choice doc:name="Choice" doc:id="57df22b3-1bf3-4694-a428-8d05614333fc">
+        <when expression="#[payload == 'fail']">
+            <solace:nack doc:name="Nack" doc:id="9f8ecdeb-8a0a-4cf1-9080-f7cab9bd3b7c" config-ref="Solace_PubSub__Connector_Config12" settlementOutcomeType="REJECTED"/>
+            <logger level="INFO" doc:name="Logger" doc:id="fa3d6b5f-18f6-48a3-ac8e-005514eb919d" message="NACK'd payload = #[payload]" />
+        </when>
+        <otherwise>
+            <solace:ack doc:name="Ack" doc:id="2c1f64c2-2881-44c6-90b5-d162cab68353" config-ref="Solace_PubSub__Connector_Config12"/>
+            <logger level="INFO" doc:name="Logger" doc:id="120bf53e-2403-43cf-b137-3e1cc2381322" message="ACK'd payload = #[payload]" />
+        </otherwise>
+    </choice>
+</flow>
+```
+
+
 ### Request-Reply Operation
 
-This operation sends a request message as part of a [Request-Reply messaging pattern](https://docs.solace.com/PubSub-Basics/Core-Concepts-Message-Models.htm#Request-) to the PubSub+ Event Broker using either direct or guaranteed messaging. It blocks until a reply is received or a configurable timeout happened.
+This operation sends a request message as part of a [Request-Reply messaging pattern](https://docs.solace.com/API/API-Developer-Guide/Request-Reply-Messaging.htm) to the PubSub+ Event Broker using either direct or guaranteed messaging. It blocks until a reply is received or a configurable timeout happened.
 
 Depending on the message type, the connector populates the request message with a temporary "Reply-to" Topic or Queue address, as well as an internal "Correlation Id". The connector automatically sets up a listener to the "Reply-to" address and expects the responder to send the reply to this address with the correct Correlation Id.
 
@@ -690,7 +750,7 @@ The default destination type is a Solace Topic with Direct delivery mode. The na
 
 | Parameter field | Description |
 |---|---|
-|Delivery Mode | Direct or Persistent. Typically use Direct for Topic type and Persistent for Queue type. Read more in the [Solace documentation](https://docs.solace.com/PubSub-Basics/Core-Concepts-Message-Delivery-Modes.htm) |
+|Delivery Mode | Direct or Persistent. Typically use Direct for Topic type and Persistent for Queue type. Read more in the [Solace documentation](https://docs.solace.com/API/API-Developer-Guide/Message-Delivery-Modes.htm#Message_Delivery_Modes) |
 |Type | [Topic](https://docs.solace.com/PubSub-Basics/Understanding-Topics.htm) or [Queue](https://docs.solace.com/PubSub-Basics/Core-Concepts-Endpoints-Queues.htm) |
 |Name | The destination's name |
 
@@ -749,6 +809,8 @@ After timeout an error condition is raised which can be handled by an Error Hand
 For more details refer to the [Request Reply](../demo/README.md#requestreply---request-reply) example.
 
 ### Recover Session Operation
+
+**Deprecation Notice:** This Operation will soon be deprecated. Users are advised to transition to the new Nack Operation for improved message handling and error management.
 
 Allows the user to perform a session recover while consuming an unacknowledged message. It can be used for "Consume Operation",  "Guaranteed Endpoint Listener" and "Guaranteed Endpoint Polling Listener" with AckMode being MANUAL_CLIENT.
 
@@ -833,7 +895,7 @@ The default destination type is a Solace Topic with Direct delivery mode. The na
 
 | Parameter field | Description |
 |---|---|
-|Topic(s) | Comma separated list of topic patterns to listen to. For valid wildcard patterns, refer to the list of subscribe topics in the [SMF Topics](https://docs.solace.com/PubSub-Basics/SMF-Topics.htm) section of the Solace documentation. |
+|Topic(s) | Comma separated list of topic patterns to listen to. For valid wildcard patterns, refer to the list of subscribe topics in the [SMF Topics](https://docs.solace.com/Messaging/Topic-Support-and-Syntax.htm) section of the Solace documentation. |
 
 #### Optional Parameters
 
@@ -868,11 +930,11 @@ Selects which connector configuration to use.
 
 Specifies where to consume the message from and how.
 
-| Parameter field | Description |
-|---|---|
-|Queue Name | The name of the Solace queue to read the message from |
-|Selector | Optionally specify a [selector](https://docs.solace.com/Solace-PubSub-Messaging-APIs/API-Developer-Guide/Using-Selectors.htm) to only consume from a subset of messages of interest. |
-|Ack Mode | Sets the [Application Acknowledgement](https://docs.solace.com/Solace-PubSub-Messaging-APIs/API-Developer-Guide/Acknowledging-Messages.htm) for the received message. Select from `AUTOMATIC IMMEDIATE` (default), `AUTOMATIC ON FLOW COMPLETION` or `MANUAL CLIENT`. "Manual Client" requires an explicit [Ack operation](#ack-operation) later in the flow. At "Automatic on flow completion" the message is automatically acknowledged after all processing at the end of the flow. |
+| Parameter field | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+|---|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|Queue Name | The name of the Solace queue to read the message from                                                                                                                                                                                                                                                                                                                                                                                                                                |
+|Selector | Optionally specify a [selector](https://docs.solace.com/API/API-Developer-Guide/Using-Selectors.htm) to only consume from a subset of messages of interest.                                                                                                                                                                                                                                                                                                                          |
+|Ack Mode | Sets the [Application Acknowledgement](https://docs.solace.com/API/API-Developer-Guide/Acknowledging-Messages.htm) for the received message. Select from `AUTOMATIC IMMEDIATE` (default), `AUTOMATIC ON FLOW COMPLETION` or `MANUAL CLIENT`. "Manual Client" requires an explicit [Ack operation](#ack-operation) later in the flow. At "Automatic on flow completion" the message is automatically acknowledged after all processing at the end of the flow. |
 
 >Note: If Ack Mode is "Manual Client", the message must be acknowledged within a [configurable maximum wait time timeout](#general-configuration-advanced-tab), with default value of 2 minutes.
 

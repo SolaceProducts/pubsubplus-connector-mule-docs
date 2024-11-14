@@ -2,8 +2,34 @@
 
 Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and PubSub+ Event Portal (event management) within MuleSoft Anypoint Platform, to make your MuleSoft integrations more reliable, agile, and event-driven.
 
+## v1.6.0
+**Nov 30, 2024**
+### Compatibility
+
+| Application/Service  | Version         |
+|----------------------|-----------------|
+| Mule Runtime         | 4.3 and higher  |
+| Studio Version       | 7.9 and higher  |
+| PubSub+ Event Broker | 9.1 and higher  |
+| Java                 | 1.8 and later   |
+
+### New Features
+1. Negative Acknowledgement (NACK) Support <br/>
+   • Introduced for Guaranteed Endpoint Listener and Guaranteed Endpoint Polling Listener Sources<br/>
+   • Uses the FAILED settlement outcome<br/>
+2. New Nack Operation <br/>
+   • Allows negative acknowledgement of guaranteed messages <br/>
+   • Supports both FAILED and REJECTED settlement outcomes <br/> 
+   • Recommended alternative to Recover Session Operation settlement outcomes <br/>
+3. Added support for DeliveryCount and ReplicationGroupMessageId as Solace Message Properties <br/>
+
+**Note:** The version of the Solace PS+ broker that supports NACK using FAILED & REJECTED settlement outcome is version 10.2.1 and later. However, it maintains compatibility with brokers that do not support these settlement capabilities. This capability is automatically processed internally to the connector and requires no user interaction or configuration.
+
+### Deprecation Notice
+The Recover Session Operation feature will soon be deprecated. Users are advised to transition to the new Nack Operation for improved message handling and error management.
+
 ## v1.5.0
-**May 31, 2023**
+**May 31, 2024**
 ### Compatibility
 
 | Application/Service  | Version         |
@@ -211,7 +237,7 @@ Add this dependency to your application pom.xml
 <dependency>
 	<groupId>com.solace.connector</groupId>
 	<artifactId>solace-mulesoft-connector</artifactId>
-	<version>1.4.0</version>
+	<version>1.6.0</version>
 	<classifier>mule-plugin</classifier>
 </dependency>
 ```

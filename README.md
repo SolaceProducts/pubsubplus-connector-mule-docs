@@ -1,6 +1,6 @@
 # Solace PubSub+ Connector - Mule 4, Documentation and Examples
 
-v1.5.x
+v1.6.x
 
 ## About the Connector
 
@@ -17,7 +17,8 @@ Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and
     * Request-reply (synchronous wait for reply in flow)
     * Publish to topic or queue (direct or persistent)
     * Ack to acknowledge messages anywhere in the Flow
-    * Recover Session will redeliver all already consumed but unacknowledged messages
+    * Nack to negatively acknowledge messages with Failed or Rejected settlement anywhere in the Flow
+    * Recover Session will redeliver all already consumed but unacknowledged messages (Nack will be replacement for this operation)
     * Guaranteed Endpoint Polling Listener (polling based GM consumer)
 
  * PubSub+ Event Portal integration
@@ -55,7 +56,7 @@ MuleSoft disclaims any support obligation for MuleSoft Certified Connectors. By 
 <dependency>
   <groupId>com.solace.connector</groupId>
   <artifactId>solace-mulesoft-connector</artifactId>
-  <version>1.5.0</version>
+  <version>1.6.0</version>
   <classifier>mule-plugin</classifier>
 </dependency>
 ```
@@ -75,7 +76,7 @@ Connector
 Published by: MuleSoft Partner
 </br>
 
-Published on: March, 2024
+Published on: Nov, 2024
 </br>
 
 Level: MuleSoft-Certified
