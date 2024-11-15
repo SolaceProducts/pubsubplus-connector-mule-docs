@@ -18,7 +18,7 @@ Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and
     * Publish to topic or queue (direct or persistent)
     * Ack to acknowledge messages anywhere in the Flow
     * Nack to negatively acknowledge messages with Failed or Rejected settlement anywhere in the Flow
-    * Recover Session will redeliver all already consumed but unacknowledged messages (Nack will be replacement for this operation)
+    * Recover Session will redeliver all already consumed but unacknowledged messages (deprecated; use the Nack operation instead)
     * Guaranteed Endpoint Polling Listener (polling based GM consumer)
 
  * PubSub+ Event Portal integration
