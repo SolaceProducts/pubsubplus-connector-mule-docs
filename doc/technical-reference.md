@@ -10,6 +10,7 @@
     *   [Config](#config)
 *   [Operations](#operations)
     * [Ack](#Ack)
+    * [Nack](#Nack)
     * [Consume](#Consume)
     * [Publish](#Publish)
     * [Request Reply](#request-reply)
@@ -912,6 +913,222 @@ A retry strategy in case of connectivity errors
 *   SOLACE:INVALID_CONFIGURATION
 
 *   SOLACE:CONNECTIVITY
+
+</div>
+
+</div>
+
+</div>
+
+<div class="sect2">
+
+### Nack
+
+<div class="paragraph">
+
+`<solace:nack>`
+
+</div>
+
+<div class="paragraph">
+
+Operation that allows the user to negatively acknowledge processing of a guaranteed message so it can be retried/removed from the PubSub+ event broker. It applies only when Ack Mode is selected to MANUAL_CLIENT.
+
+</div>
+
+<div class="sect3">
+
+#### Parameters
+
+<table class="tableblock frame-all grid-all spread"><colgroup><col style="width: 20%;"> <col style="width: 20%;"> <col style="width: 35%;"> <col style="width: 20%;"> <col style="width: 5%;"></colgroup>
+
+<thead>
+
+<tr>
+
+<th class="tableblock halign-left valign-middle">Name</th>
+
+<th class="tableblock halign-left valign-middle">Type</th>
+
+<th class="tableblock halign-left valign-middle">Description</th>
+
+<th class="tableblock halign-left valign-middle">Default Value</th>
+
+<th class="tableblock halign-center valign-middle">Required</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+Configuration
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+String
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+The name of the connector configuration to use.
+
+</td>
+
+<td class="tableblock halign-left valign-middle"></td>
+
+<td class="tableblock halign-center valign-middle">
+
+**x**
+
+</td>
+
+</tr>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+Message Reference Id
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+<div>
+
+<div class="paragraph">
+
+String
+
+</div>
+
+</div>
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+The "Reference Id" property from the Solace Message Properties of the message to be negatively acknowledged
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+#[attributes.messageReferenceId]
+
+</td>
+
+<td class="tableblock halign-center valign-middle"></td>
+
+</tr>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+Settlement Outcome
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+Enumeration, one of:
+* FAILED 
+* REJECTED
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+FAILED:
+
+This negative acknowledgment notifies the event broker that the message was not processed successfully. The event broker will attempt to redeliver the message while adhering to delivery count limits.
+
+REJECTED: 
+
+This negative acknowledgment notifies the event broker that the message was not accepted. The event broker will remove the message from its queue and then move the message to the Dead Message Queue (DMQ) if it is configured.
+
+</td>
+
+<td class="tableblock halign-left valign-middle">FAILED</td>
+
+<td class="tableblock halign-center valign-middle">
+
+</td>
+
+</tr>
+
+<tr>
+
+<td class="tableblock halign-left valign-middle">
+
+Reconnection Strategy
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+<div>
+
+<div class="ulist">
+
+*   [Reconnect](#reconnect)
+
+*   [Reconnect Forever](#reconnect-forever)
+
+</div>
+
+</div>
+
+</td>
+
+<td class="tableblock halign-left valign-middle">
+
+A retry strategy in case of connectivity errors
+
+</td>
+
+<td class="tableblock halign-left valign-middle"></td>
+
+<td class="tableblock halign-center valign-middle"></td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="sect3">
+
+#### For Configurations.
+
+<div class="ulist">
+
+*   [Config](#config)
+
+</div>
+
+</div>
+
+<div class="sect3">
+
+#### Throws
+
+<div class="ulist">
+
+*   SOLACE:GENERIC_ERROR
+
+*   SOLACE:INVALID_CONFIGURATION
 
 </div>
 
@@ -3190,6 +3407,8 @@ Any
 </div>
 
 <div class="paragraph">
+
+**Deprecation Notice:** This Operation will soon be deprecated. Users are advised to transition to the new Nack Operation for improved message handling and error management.
 
 Operation that allows  the user to perform a session recover when consuming an unacknowledged message. It applies only when Ack Mode is selected to MANUAL_CLIENT.
 
@@ -6369,34 +6588,37 @@ A time unit that qualifies the maxIdleTime attribute
 
 ### Solace Message Properties
 
-| Field	| Type | Description |
-|---|---|---|
-| DMQ Eligible | Boolean |  |
-| Application Message Id | String | An application-specific message identifier |
-| Application Message Type | String | An application-specific message type |
-| Content Type | String | The HTTP content type header value if the Solace message originated from interaction with an HTTP client or null if it is not set |
-| Correlation Id | String | Correlation ID for Request-Reply messaging, used for correlating a request to a reply |
-| Cos | Number | The Class of Service (CoS) value for this message |
-| Delivery Mode | String | Represents the message delivery mode. Each type is associated with a set of delivery characteristics and guarantees. The valid modes are: NON_PERSISTENT, PERSISTENT and DIRECT  |
-| Destination | String | The destination this message was published to |
-| Discard Indication | Boolean | True if one or more messages have been discarded prior to the current message, else False |
-| Eliding Eligible | Boolean | Whether the message is eligible for eliding |
-| Endpoint Type | String | The type of the destination: TOPIC or QUEUE |
-| Expiration | Number | The UTC time (in milliseconds, from midnight, January 1, 1970 UTC) when the message is supposed to expire |
-| Message Id | String | The Solace message ID |
-| Message Reference Id | String | A generated Message Reference ID, to be used for Acknowledgement |
-| Priority | Number | The priority value in the range of 0–255, or -1 if it is not set |
-| Receiver Timestamp | Number | The receive timestamp (in milliseconds, from midnight, January 1, 1970 UTC) |
-| Redelivered | Boolean | Indicates if the message has been delivered by the PubSub+ broker to the API before |
-| Reply | Boolean | Whether the message's reply field is set, indicating that this message is a reply |
-| Reply To | String | The reply-to destination |
-| Reply To Endpoint Type | String | The type of the reply-to endpoint: TOPIC or QUEUE |
-| Sender ID | String | The Sender's ID |
-| Sender Timestamp | Number | The send timestamp (in milliseconds, from midnight, January 1, 1970 UTC) |
-| Sequence Number | Number | The Solace message sequence number |
-| Time To Live | Number | The number of milliseconds before the message is discarded or moved to Dead Message Queue |
-| User Data | Binary | When an application sends a message, it can optionally attach application-specific data along with the message, such as user data |
-| User Properties | Object | The user properties map |
+| Field	                       | Type    | Description                                                                                                                                                                                                                                          |
+|------------------------------|---------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| DMQ Eligible                 | Boolean |                                                                                                                                                                                                                                                      |
+| Application Message Id       | String  | An application-specific message identifier                                                                                                                                                                                                           |
+| Application Message Type     | String  | An application-specific message type                                                                                                                                                                                                                 |
+| Content Type                 | String  | The HTTP content type header value if the Solace message originated from interaction with an HTTP client or null if it is not set                                                                                                                    |
+| Correlation Id               | String  | Correlation ID for Request-Reply messaging, used for correlating a request to a reply                                                                                                                                                                |
+| Cos                          | Number  | The Class of Service (CoS) value for this message                                                                                                                                                                                                    |
+| Delivery Mode                | String  | Represents the message delivery mode. Each type is associated with a set of delivery characteristics and guarantees. The valid modes are: NON_PERSISTENT, PERSISTENT and DIRECT                                                                      |
+| Destination                  | String  | The destination this message was published to                                                                                                                                                                                                        |
+| Discard Indication           | Boolean | True if one or more messages have been discarded prior to the current message, else False                                                                                                                                                            |
+| Eliding Eligible             | Boolean | Whether the message is eligible for eliding                                                                                                                                                                                                          |
+| Endpoint Type                | String  | The type of the destination: TOPIC or QUEUE                                                                                                                                                                                                          |
+| Expiration                   | Number  | The UTC time (in milliseconds, from midnight, January 1, 1970 UTC) when the message is supposed to expire                                                                                                                                            |
+| Message Id                   | String  | The Solace message ID                                                                                                                                                                                                                                |
+| Message Reference Id         | String  | A generated Message Reference ID, to be used for Acknowledgement                                                                                                                                                                                     |
+| Priority                     | Number  | The priority value in the range of 0–255, or -1 if it is not set                                                                                                                                                                                     |
+| Receiver Timestamp           | Number  | The receive timestamp (in milliseconds, from midnight, January 1, 1970 UTC)                                                                                                                                                                          |
+| Redelivered                  | Boolean | Indicates if the message has been delivered by the PubSub+ broker to the API before                                                                                                                                                                  |
+| Reply                        | Boolean | Whether the message's reply field is set, indicating that this message is a reply                                                                                                                                                                    |
+| Reply To                     | String  | The reply-to destination                                                                                                                                                                                                                             |
+| Reply To Endpoint Type       | String  | The type of the reply-to endpoint: TOPIC or QUEUE                                                                                                                                                                                                    |
+| Sender ID                    | String  | The Sender's ID                                                                                                                                                                                                                                      |
+| Sender Timestamp             | Number  | The send timestamp (in milliseconds, from midnight, January 1, 1970 UTC)                                                                                                                                                                             |
+| Sequence Number              | Number  | The Solace message sequence number                                                                                                                                                                                                                   |
+| Time To Live                 | Number  | The number of milliseconds before the message is discarded or moved to Dead Message Queue                                                                                                                                                            |
+| User Data                    | Binary  | When an application sends a message, it can optionally attach application-specific data along with the message, such as user data                                                                                                                    |
+| User Properties              | Object  | The user properties map                                                                                                                                                                                                                              |
+| Delivery Count               | Number  | A read-only property that indicates how many times the broker has attempted to deliver a message to a consumer. <br/>**Note:** It must be explicitly enabled for queues and topic endpoints on the broker side before client applications can use it |
+| Replication Group Message Id | String  | It is a unique identifier assigned by Solace PubSub+ event brokers to messages on queues or topic endpoints within a high availability (HA) group and replication group.                                                                             |
+
 
 </br>
 
