@@ -2,6 +2,24 @@
 
 Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and PubSub+ Event Portal (event management) within MuleSoft Anypoint Platform, to make your MuleSoft integrations more reliable, agile, and event-driven.
 
+## v1.7.0
+**Mar 14, 2025**
+### Compatibility
+
+| Application/Service  | Version         |
+|----------------------|-----------------|
+| Mule Runtime         | 4.3 and higher  |
+| Studio Version       | 7.9 and higher  |
+| PubSub+ Event Broker | 9.1 and higher  |
+| Java                 | 1.8 and later   |
+
+### New Features
+* Enhanced the connector to support HTTP-based content encoding types (like gzip) by allowing direct passthrough of encoding values without attempting a strict charset conversion
+
+### Fixed Issues
+* Fixed an incompatibility when accessing the boolean type properties in SolaceMessageProperties within Dataweave expressions while running on Java 17
+
+
 ## v1.6.0
 **Nov 30, 2024**
 ### Compatibility

@@ -1,6 +1,6 @@
 # Solace PubSub+ Connector - Mule 4, Documentation and Examples
 
-v1.6.x
+v1.7.x
 
 ## About the Connector
 
@@ -56,7 +56,7 @@ MuleSoft disclaims any support obligation for MuleSoft Certified Connectors. By 
 <dependency>
   <groupId>com.solace.connector</groupId>
   <artifactId>solace-mulesoft-connector</artifactId>
-  <version>1.6.0</version>
+  <version>1.7.0</version>
   <classifier>mule-plugin</classifier>
 </dependency>
 ```
@@ -76,7 +76,7 @@ Connector
 Published by: MuleSoft Partner
 </br>
 
-Published on: Nov, 2024
+Published on: Mar, 2025
 </br>
 
 Level: MuleSoft-Certified

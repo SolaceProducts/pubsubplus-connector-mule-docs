@@ -6091,8 +6091,17 @@ The path to the CRL file.
 ### Reconnection
 
 The Reconnection capability available at the JCSMP client level is disabled by default. 
+The JCSMP client reconnection strategy operates at a lower level in the connection stack and provides more robust handling of connection state during reconnection events. While this approach is generally recommended as a best practice, it becomes particularly critical in the following scenarios.
 
-**Note:** <em> When using the JCSMP client reconnection config, you will have to disable Reconnection Strategy config of the Mule Runtime(if configured). </em>
+<div class="ulist">
+
+*   When publishing messages from a Mule application to Solace PubSub+, network disruptions can trigger reconnection mechanisms. If the Mule Runtime reconnection strategy is configured, applications may experience null payloads being published during reconnection events. This specifically occurs when the Mule payload is of CursorStreamProvider type, as the stream cursor resets on ConnectionExceptions. While this doesn't result in data loss (as the stream will be retried again upon reconnection), it will produce null messages in the message flow during the reconnection process.
+
+*   When implementing a flow that utilizes both Guaranteed Endpoint Listener and Publish Operations on the same Connection, the PubSub+ Connector provides superior reconnection handling compared to standard Mule Runtime reconnection strategies. This results in more reliable message processing, and improved application resilience during network disruptions.
+
+</div>
+
+**Note:** <em> The JCSMP client reconnection operates at a lower level in the connection stack, while the Mule Runtime reconnection strategy works at a higher level. If both are configured simultaneously, the JCSMP client reconnection will trigger first, and only after all its retry attempts are exhausted will the Mule reconnection strategy activate. For clearer behavior and easier troubleshooting, it's generally recommended to use only one reconnection mechanism. </em>
 
 Set the following properties to the number of times you would prefer the retries to be performed [JCSMP properties](user-guide.md#jcsmp-properties).
 
