@@ -2,6 +2,21 @@
 
 Use the PubSub+ Connector to leverage PubSub+ Event Broker (event streaming) and PubSub+ Event Portal (event management) within MuleSoft Anypoint Platform, to make your MuleSoft integrations more reliable, agile, and event-driven.
 
+## v1.8.2
+**<Release date TBD>**
+### Compatibility
+
+| Application/Service  | Version          |
+|----------------------|------------------|
+| Mule Runtime         | 4.3 and higher   |
+| Studio Version       | 7.9 and higher   |
+| PubSub+ Event Broker | 9.1 and higher   |
+| Java                 | 1.8 and 17       |
+
+### Fixed Issues
+* Upgraded library dependency `com.solacesystems:sol-jcsmp` from 10.29.0 to 10.30.2.
+* Upgraded third-party dependencies to address reported security vulnerabilities: Netty 4.2.21.Final, Jackson 2.18.12, OpenTelemetry 1.67.0 (with Solace OpenTelemetry JCSMP Integration 1.2.1) and Guava 33.8.0-jre. (DATAGO-162185)
+
 ## v1.8.1
 **Dec 31, 2025**
 ### Compatibility
